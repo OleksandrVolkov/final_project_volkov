@@ -143,26 +143,52 @@ public class UserDAO extends AbstractDAO<User>{
     }
 
 
-    public boolean validateUser(String login, String password) throws SQLException {
+    public boolean validateUser(String login, String password) {
         String query = "SELECT * FROM users WHERE login=? AND password=?;";
 
-        preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setString(1, login);
-        preparedStatement.setString(2, password);
-        boolean flag = false;
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
 
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next())
+                return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
-        resultSet = preparedStatement.executeQuery();
+    public boolean isEmailTaken(String email){
+        String query = "SELECT * FROM users WHERE email = ?;";
 
-        int counter;
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, email);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next())
+                return true;
 
-        for(counter = 0; resultSet.next(); counter++);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    public boolean isUsernameTaken(String username){
+        String query = "SELECT * FROM users WHERE login = ?;";
 
+        try {
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, username);
+            resultSet = preparedStatement.executeQuery();
+            if(resultSet.next())
+                return true;
 
-        if(counter != 1)
-            return false;
-        else
-            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
 }

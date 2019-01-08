@@ -9,7 +9,7 @@
 
 <h1>Show requests</h1>
 
-<form action="/managerserv">
+<form action="/client">
 
     <input type="hidden" name="currentPage" value="1">
 

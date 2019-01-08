@@ -26,6 +26,8 @@ public class RegistrationServlet extends HttpServlet {
         boolean isValidEmail = true;
         boolean isValidLogin = true;
         boolean isValidPassword = true;
+        boolean isBusyLogin = true;
+        boolean isBusyEmail = true;
 
         Validator validator = new Validator();
         if(!validator.isValidName(req.getParameter("name")))
@@ -39,19 +41,25 @@ public class RegistrationServlet extends HttpServlet {
         if(!validator.isValidPassword(req.getParameter("pas")))
             isValidPassword = false;
 
+        UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
+        if(userDAO.isEmailTaken(req.getParameter("email")))
+            isBusyEmail = false;
+        if(userDAO.isUsernameTaken(req.getParameter("login")))
+            isBusyLogin = false;
 
 
 
-        if(isValidName == false || isValidSurname == false || isValidLogin == false || isValidEmail == false)
+
+        if(isValidName == false || isValidSurname == false || isValidLogin == false || isValidEmail == false || isBusyEmail == false || isBusyLogin == false)
             resp.sendRedirect("reg.jsp?isValidName=" + isValidName + "&isValidSurname=" +
                     isValidSurname + "&isValidEmail=" + isValidEmail + "&isValidLogin=" +
-                    isValidLogin + "&isValidPassword=" + isValidPassword);
+                    isValidLogin + "&isValidPassword=" + isValidPassword + "&isBusyLogin=" +
+                    isBusyLogin + "&isBusyEmail=" + isBusyEmail);
         else {
             User user = new User(req.getParameter("name"), req.getParameter("surname"), req.getParameter("login"),
                     req.getParameter("pas"), req.getParameter("email"), "client");
-            UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
+//            UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
             userDAO.create(user);
-            System.out.println(userDAO.findEntityById(user.getId()));
             resp.sendRedirect("main.jsp");
         }
     }

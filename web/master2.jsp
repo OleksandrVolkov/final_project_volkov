@@ -11,12 +11,29 @@
         <tr>
             <th>Text</th>
             <th>Status</th>
+            <th>Items</th>
+            <th>Done</th>
         </tr>
+
 
         <c:forEach items="${requests}" var="cur_request">
             <tr>
                 <td>${cur_request.text}</td>
                 <td>${cur_request.status}</td>
+                <td>
+                    <c:forEach items="${cur_request.getItems()}" var="cur_item">
+                        ${cur_item.getName()}
+                        <br>
+                        ${cur_item.getInfo()}
+                    </c:forEach>
+                </td>
+                <td>
+                    <form method="get" action="/doneReq">
+                        <input type="hidden" name="currentPage" value="${currentPage}">
+                        <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
+                        <button type="submit" class="cancel" name="cancelButton" value="${cur_request.id}">Выполнено</button>
+                    </form>
+                </td>
             </tr>
         </c:forEach>
     </table>
@@ -59,4 +76,3 @@
 
 </body>
 </html>
-

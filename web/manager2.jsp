@@ -1,11 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%--
-  Created by IntelliJ IDEA.
-  User: volkov_o_o
-  Date: 26.12.18
-  Time: 02:26
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -18,12 +11,55 @@
         <tr>
             <th>Text</th>
             <th>Status</th>
+            <th>Items</th>
+            <th>Cancel</th>
+            <th>Confirm</th>
         </tr>
+
 
         <c:forEach items="${requests}" var="cur_request">
             <tr>
                 <td>${cur_request.text}</td>
                 <td>${cur_request.status}</td>
+                <%--<td>--%>
+                        <%--${cur_request.getItems().get(0).getName()}--%>
+                            <%--<br>--%>
+                        <%--${cur_request.getItems().get(0).getInfo()}--%>
+                <%--</td>--%>
+                <td>
+                    <c:forEach items="${cur_request.getItems()}" var="cur_item">
+                        ${cur_item.getName()}
+                        <br>
+                        ${cur_item.getInfo()}
+                    </c:forEach>
+                </td>
+                <td>
+                    <%--<form method="get" action="/cancelReq">--%>
+                    <form method="get" action="rejectionForm.jsp">
+                        <input type="hidden" name="currentPage" value="${currentPage}">
+                        <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
+                        <input type="hidden" name="request_id" value="${cur_request.id}">
+                        <button type="submit" class="cancel" name="cancelButton" value="${cur_request.id}">Отменить</button>
+                    </form>
+                </td>
+                <td>
+                        <%--<c:if test="${notNeededToConfirm.contains(cur_request.id)}">--%>
+                            <%--<form method="get" action="manager_price.jsp">--%>
+                                <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
+                                <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
+                                <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
+                                <%--<button type="submit" class="accept" name="confirmButton" value="${cur_request.id}">Подтвердить</button>--%>
+                            <%--</form>--%>
+                        <%--</c:if>--%>
+                            <c:if test="${cur_request.price eq null && cur_request.status eq 'not seen'}">
+                                <form method="get" action="manager_price.jsp">
+                                    <input type="hidden" name="currentPage" value="${currentPage}">
+                                    <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
+                                    <input type="hidden" name="request_id" value="${cur_request.id}">
+                                    <button type="submit" class="accept" name="confirmButton" value="${cur_request.id}">Подтвердить</button>
+                                </form>
+                            </c:if>
+                </td>
             </tr>
         </c:forEach>
     </table>
@@ -31,11 +67,11 @@
 
 <nav aria-label="Navigation for countries">
     <ul class="pagination">
-        <c:if test="${currentPage != 1}">
-            <li class="page-item"><a class="page-link"
-                                     href="managerserv?recordsPerPage=${recordsPerPage}&currentPage=${currentPage-1}">Previous</a>
-            </li>
-        </c:if>
+            <c:if test="${currentPage != 1}">
+                <li class="page-item"><a class="page-link"
+                                         href="managerserv?recordsPerPage=${recordsPerPage}&currentPage=${currentPage-1}">Previous</a>
+                </li>
+            </c:if>
 
         <c:forEach begin="1" end="${noOfPages}" var="i">
             <c:choose>

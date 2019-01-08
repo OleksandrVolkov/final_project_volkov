@@ -366,7 +366,8 @@
     <div class="header-right">
         <a class="active" href="#home">Главная</a>
         <a href="#contact">Услуги</a>
-        <a onclick="document.getElementById('id02').style.display='block'">Авторизация</a>
+        <%--<a onclick="document.getElementById('id02').style.display='block'">Авторизация</a>--%>
+        <a href="authorization.jsp">Авторизация</a>
         <a href="#about">О нас</a>
         <a href="#contacts">Контакты</a>
     </div>
@@ -385,85 +386,85 @@
       Наше агенство предоставляет возможность, оформив заявку, осуществить обслуживание
         вашего автомобиля в полном объеме в кратчайшие сроки по самым оптимальным ценам
     </p>
-    <a class="sendRequestButton" onclick="document.getElementById('id01').style.display='block'">Отправить заявку</a>
-
+    <%--<a class="sendRequestButton" onclick="document.getElementById('id01').style.display='block'">Отправить заявку</a>--%>
+    <a class="sendRequestButton" href="/preRequest">Отправить заявку</a>
 </div>
 
-<div id="id01" class="modal">
-    <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
-    <form class="modal-content" action="/request">
-        <div class="container">
-            <h1>Оставить заявку</h1>
-            <p>Пожалуйста, введите необходимые данные для оформления заявкм</p>
-            <hr>
-            <label for="selectItem"><b>Выбрать услугу</b></label>
-            <br>
-            <select name="selectItem">
-                <option value="kuzov">Ремонт кузова</option>
-                <option value="engine">Замена двигателя</option>
-                <option value="go">Замена ходовой</option>
-                <option value="bus">Замена шин</option>
-            </select>
-            <br>
-            <br>
-            <br>
-            <label for="comment"><b>Комментарий</b></label>
-            <div class="textar">
-                <textarea type="text" placeholder="Введите комментарий" name="comment" required></textarea>
-            </div>
-<br>
+<%--<div id="id01" class="modal">--%>
+    <%--<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
+    <%--<form class="modal-content" action="/request">--%>
+        <%--<div class="container">--%>
+            <%--<h1>Оставить заявку</h1>--%>
+            <%--<p>Пожалуйста, введите необходимые данные для оформления заявкм</p>--%>
+            <%--<hr>--%>
+            <%--<label for="selectItem"><b>Выбрать услугу</b></label>--%>
+            <%--<br>--%>
+            <%--<select name="selectItem">--%>
+                <%--<option value="kuzov">Ремонт кузова</option>--%>
+                <%--<option value="engine">Замена двигателя</option>--%>
+                <%--<option value="go">Замена ходовой</option>--%>
+                <%--<option value="bus">Замена шин</option>--%>
+            <%--</select>--%>
+            <%--<br>--%>
+            <%--<br>--%>
+            <%--<br>--%>
+            <%--<label for="comment"><b>Комментарий</b></label>--%>
+            <%--<div class="textar">--%>
+                <%--<textarea type="text" placeholder="Введите комментарий" name="comment" required></textarea>--%>
+            <%--</div>--%>
+<%--<br>--%>
 
 
-            <label>
-                <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня
-            </label>
-
-
-
-            <div class="clearfix">
-                <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Отменить</button>
-                <button type="submit" class="signupbtn">Отправить заявку</button>
-            </div>
-        </div>
-    </form>
-</div>
+            <%--<label>--%>
+                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
+            <%--</label>--%>
 
 
 
-<div id="id02" class="modal">
-    <span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>
-    <form class="modal-content" action="/authorization">
-        <div class="container">
-            <h1>Авторизация</h1>
-            <p>Пожалуйста, введите необходимые данные для авторизации</p>
-            <hr>
-            <label for="login"><b>Login</b></label>
-            <input type="text" placeholder="Login" name="login" required>
-            <br>
-            <br>
-            <label for="pas"><b>Password</b></label>
-            <input type="password" placeholder="Password" name="pas" required>
-            <br>
+            <%--<div class="clearfix">--%>
+                <%--<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Отменить</button>--%>
+                <%--<button type="submit" class="signupbtn">Отправить заявку</button>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    <%--</form>--%>
+<%--</div>--%>
 
-            <label>
-                <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня
-            </label>
-            <br>
-            <%--onclick="document.getElementById('id03').style.display='block'"--%>
-            <div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp">Не зарегистрированы?</a></div>
-            <br>
-            <br>
-            <br>
-            <div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>
 
-            <div class="clearfix">
-                <button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Отменить</button>
-                <button type="submit" class="signupbtn">Отправить заявку</button>
-            </div>
 
-</div>
-    </form>
-</div>
+<%--<div id="id02" class="modal">--%>
+    <%--<span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
+    <%--<form class="modal-content" action="/authorization">--%>
+        <%--<div class="container">--%>
+            <%--<h1>Авторизация</h1>--%>
+            <%--<p>Пожалуйста, введите необходимые данные для авторизации</p>--%>
+            <%--<hr>--%>
+            <%--<label for="login"><b>Login</b></label>--%>
+            <%--<input type="text" placeholder="Login" name="login" required>--%>
+            <%--<br>--%>
+            <%--<br>--%>
+            <%--<label for="pas"><b>Password</b></label>--%>
+            <%--<input type="password" placeholder="Password" name="pas" required>--%>
+            <%--<br>--%>
+
+            <%--<label>--%>
+                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
+            <%--</label>--%>
+            <%--<br>--%>
+            <%--&lt;%&ndash;onclick="document.getElementById('id03').style.display='block'"&ndash;%&gt;--%>
+            <%--<div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp">Не зарегистрированы?</a></div>--%>
+            <%--<br>--%>
+            <%--<br>--%>
+            <%--<br>--%>
+            <%--<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>--%>
+
+            <%--<div class="clearfix">--%>
+                <%--<button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Отменить</button>--%>
+                <%--<button type="submit" class="signupbtn">Отправить заявку</button>--%>
+            <%--</div>--%>
+
+<%--</div>--%>
+    <%--</form>--%>
+<%--</div>--%>
 
 <%--<div id="id03" class="modal mod3">--%>
     <%--<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>--%>

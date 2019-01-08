@@ -4,18 +4,19 @@ public class Feedback {
     private Integer id;
     private String text;
     private String date;
+    private int requestId;
 
-
-
-    public Feedback(int id, String text, String date) {
+    public Feedback(int id, String text, String date, int requestId) {
         this.id = id;
         this.text = text;
         this.date = date;
+        this.requestId = requestId;
     }
 
-    public Feedback(String text, String date) {
+    public Feedback(String text, String date, int requestId) {
         this.text = text;
         this.date = date;
+        this.requestId = requestId;
     }
 
 
@@ -51,5 +52,33 @@ public class Feedback {
                 ", text='" + text + '\'' +
                 ", date='" + date + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Feedback feedback = (Feedback) o;
+
+        if (!id.equals(feedback.id)) return false;
+        if (!text.equals(feedback.text)) return false;
+        return date.equals(feedback.date);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + text.hashCode();
+        result = 31 * result + date.hashCode();
+        return result;
+    }
+
+    public int getRequestId() {
+        return requestId;
+    }
+
+    public void setRequestId(int requestId) {
+        this.requestId = requestId;
     }
 }

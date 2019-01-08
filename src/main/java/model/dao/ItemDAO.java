@@ -1,6 +1,7 @@
 package model.dao;
 
 import model.entity.Item;
+import model.entity.Request;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -95,9 +96,7 @@ public class ItemDAO extends AbstractDAO<Item>{
     }
 
     public Integer getItemIndexByName(String name){
-      //  String query = "SELECT * FROM items WHERE name = " + name + ";";
         String query = "SELECT * FROM items WHERE name = '"+name+"';";
-        System.out.println(query);
         try {
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery(query);
@@ -130,6 +129,26 @@ public class ItemDAO extends AbstractDAO<Item>{
             return null;
         }
     }
+
+
+    public List<Item> getItemsByRequest(Request request){
+        String query = "SELECT * FROM requests_items WHERE request_id = '"+request.getId()+"';";
+        List<Item> items = new ArrayList<>();
+        try {
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery(query);
+            int id = 0;
+            while (resultSet.next()) {
+                id = resultSet.getInt("item_id");
+                items.add(this.findEntityById(id));
+            }
+            return items;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 
 }

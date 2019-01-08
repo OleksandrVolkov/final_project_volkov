@@ -1,5 +1,6 @@
 package model.dao;
 
+import model.dao.connection.ConnectionManager;
 import model.entity.Feedback;
 
 import java.sql.Connection;
@@ -29,13 +30,8 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
                 int id = resultSet.getInt("id");
                 String text = resultSet.getString("feedback_text");
                 String date = resultSet.getString("feedback_date");
-
-//                int request_id = resultSet.getInt("request_id");
-//                int user_id = resultSet.getInt("user_id");
-//                Request request = requestDAO.findEntityById(request_id);
-//                User user = userDAO.findEntityById(user_id);
-
-                feedbacks.add(new Feedback(id, text, date));
+                int requestId = resultSet.getInt("request_id");
+                feedbacks.add(new Feedback(id, text, date, requestId));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -58,12 +54,8 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
             while (resultSet.next()){
                 String text = resultSet.getString("feedback_text");
                 String date = resultSet.getString("feedback_date");
-//                int request_id = resultSet.getInt("request_id");
-//                int user_id = resultSet.getInt("user_id");
-
-//                Request request = requestDAO.findEntityById(request_id);
-//                User user = userDAO.findEntityById(user_id);
-                feedback = new Feedback(id, text, date);
+                int request_id = resultSet.getInt("request_id");
+                feedback = new Feedback(id, text, date, request_id);
             }
 
             return feedback;
@@ -92,15 +84,16 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
     public boolean create(Feedback feedback) {
         userDAO = new UserDAO(connection);
         requestDAO = new RequestDAO(connection);
-        String query = "INSERT INTO feedbacks(feedback_text, feedback_date) VALUES(?,?);";
+        String query = "INSERT INTO feedbacks(feedback_text, feedback_date, request_id) VALUES(?,?,?);";
         try{
             preparedStatement = connection.prepareStatement(query);
             String text = feedback.getText();
             String date = feedback.getDate();
+            int requestId = feedback.getRequestId();
 
             preparedStatement.setString(1, text);
             preparedStatement.setString(2, date);
-
+            preparedStatement.setInt(3, requestId);
             preparedStatement.execute();
 
         }catch(SQLException e){
@@ -136,13 +129,14 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
     public Feedback update(Feedback feedback, int key) {
         userDAO = new UserDAO(connection);
         requestDAO = new RequestDAO(connection);
-        String query = "UPDATE feedbacks SET feedback_text = ?, feedback_date = ? WHERE id = "+key+";";
+        String query = "UPDATE feedbacks SET feedback_text = ?, feedback_date = ?, request_id = ? WHERE id = "+key+";";
 
         try {
             preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, feedback.getText());
             preparedStatement.setString(2, feedback.getDate());
+            preparedStatement.setInt(3, feedback.getRequestId());
 //            preparedStatement.setInt(3, feedback.getUser().getId());
 //            preparedStatement.setInt(4, feedback.getRequest().getId());
 
@@ -152,5 +146,23 @@ public class FeedbackDAO extends AbstractDAO<Feedback> {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public Feedback getFeedbackByRequestId(int requestId){
+        String query = "SELECT * FROM feedbacks WHERE request_id = " + requestId + ";";
+        Feedback feedback = null;
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            if(resultSet.next()){
+                String text = resultSet.getString("feedback_text");
+                String date = resultSet.getString("feedback_date");
+                feedback = new Feedback(text, date, requestId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return feedback;
     }
 }

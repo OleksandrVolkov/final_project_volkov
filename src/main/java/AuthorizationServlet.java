@@ -20,15 +20,11 @@ public class AuthorizationServlet extends HttpServlet {
         String login = req.getParameter("login");
         String password = req.getParameter("pas");
         UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
-        try {
             if(userDAO.validateUser(login, password)){
                 resp.sendRedirect("main.jsp");
             }else {
                 resp.sendRedirect("reg.jsp");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
 

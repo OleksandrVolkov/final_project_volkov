@@ -1,7 +1,5 @@
-import model.dao.ItemDAO;
 import model.dao.RequestDAO;
 import model.dao.connection.ConnectionManager;
-import model.entity.Item;
 import model.entity.Request;
 
 import javax.servlet.ServletException;
@@ -10,10 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.SQLException;
 
-@WebServlet("/request")
-public class RequestServlet extends HttpServlet{
+@WebServlet(name = "acceptReq", urlPatterns = {"/acceptReq"})
+public class AcceptRequestServlet extends HttpServlet{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         this.doPost(req, resp);
@@ -21,26 +18,17 @@ public class RequestServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String comment = req.getParameter("comment");
-        String itemId = req.getParameter("itemID");
-        String status = "not seen";
-
-
-        Integer id = Integer.parseInt(itemId);
-        ItemDAO itemDAO = new ItemDAO(ConnectionManager.getConnection());
-        Item item = itemDAO.findEntityById(id);
-
-
-        //id name info
-
+        String newStatus = "is being seen";
+        String request_id = req.getParameter("cur_request_id");
+        Double price = Double.parseDouble(req.getParameter("price"));
 
         RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-        Request request = new Request(comment, status);
-        request.addItem(item);
-        requestDAO.create(request);
+        Integer requestId = Integer.parseInt(request_id);
+        Request request = requestDAO.findEntityById(requestId);
+        request.setStatus(newStatus);
+        request.setPrice(price);
+        requestDAO.update(request, request.getId());
 
-
-        resp.sendRedirect("main.jsp");
-
+        req.getRequestDispatcher("/managerserv").forward(req, resp);
     }
 }

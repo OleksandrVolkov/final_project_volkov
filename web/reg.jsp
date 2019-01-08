@@ -196,53 +196,17 @@
     .busyLogin{
 
     }
+    .cancelLink{
+        text-decoration: none;
+        color: white;
+    }
 
+    .cancelLink :hover{
+        text-decoration: none;
+        color: white;
+    }
 </style>
 <body>
-
-<%--<h2>Modal Signup Form</h2>--%>
-
-<%--<button onclick="document.getElementById('id01').style.display='block'" style="width:auto;">Sign Up</button>--%>
-
-<%--<div id="id01" class="modal">--%>
-    <%--<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-    <%--<form class="modal-content" action="/action_page.php">--%>
-        <%--<div class="container">--%>
-            <%--<h1>Sign Up</h1>--%>
-            <%--<p>Please fill in this form to create an account.</p>--%>
-            <%--<hr>--%>
-            <%--<label for="email"><b>Email</b></label>--%>
-            <%--<input type="text" placeholder="Enter Email" name="email" required>--%>
-
-            <%--<label for="psw"><b>Password</b></label>--%>
-            <%--<input type="password" placeholder="Enter Password" name="psw" required>--%>
-
-            <%--<label for="psw-repeat"><b>Repeat Password</b></label>--%>
-            <%--<input type="password" placeholder="Repeat Password" name="psw-repeat" required>--%>
-
-            <%--<label for="login"><b>Login</b></label>--%>
-            <%--<input type="text" placeholder="Login" name="login" required>--%>
-
-            <%--<label for="name"><b>Name</b></label>--%>
-            <%--<input type="text" placeholder="Name" name="name" required>--%>
-
-            <%--<label for="surname"><b>Surname</b></label>--%>
-            <%--<input type="text" placeholder="Surname" name="surname" required>--%>
-
-            <%--<label>--%>
-                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Remember me--%>
-            <%--</label>--%>
-
-            <%--<p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>--%>
-
-            <%--<div class="clearfix">--%>
-                <%--<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>--%>
-                <%--<button type="submit" class="signupbtn">Sign Up</button>--%>
-            <%--</div>--%>
-        <%--</div>--%>
-    <%--</form>--%>
-<%--</div>--%>
-
 
 <div id="id01" class="modal mod3">
     <%--<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
@@ -286,7 +250,7 @@
             <%--<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>--%>
 
             <div class="clearfix">
-                <button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Отменить</button>
+                <a class="cancelLink" href="main.jsp"><button type="button" class="cancelbtn">Отменить</button></a>
                 <button type="submit" class="signupbtn">Зарегистрироваться</button>
             </div>
         </div>
@@ -307,9 +271,9 @@
         document.getElementById('wrongSurname').style.display = "block";
     if(url.searchParams.get("isValidEmail") == 'false')
         document.getElementById('wrongEmail').style.display = "block";
-    if(false)
+    if(url.searchParams.get("isBusyLogin") == 'false')
         document.getElementById('busyLogin').style.display = "block";
-    if(false)
+    if(url.searchParams.get("isBusyEmail") == 'false')
         document.getElementById('busyEmail').style.display = "block";
 
 
