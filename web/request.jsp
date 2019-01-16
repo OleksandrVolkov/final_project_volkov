@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: volkov_o_o
-  Date: 01.01.19
-  Time: 01:10
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
@@ -186,10 +179,10 @@
     <span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>
     <form class="modal-content" action="/request">
         <div class="container">
-            <h1>Оставить заявку</h1>
-            <p>Пожалуйста, введите необходимые данные для оформления заявкм</p>
+            <h1><c:out value="${language['leaveRequest']}"/></h1>
+            <p><c:out value="${language['enterData']}"/></p>
             <hr>
-            <label for="selectItem"><b>Выбрать услугу</b></label>
+            <label for="selectItem"><b><c:out value="${language['chooseItem']}"/></b></label>
             <br>
             <select name="itemID">
                 <c:forEach items="${itemsAvailable}" var="cur_item">
@@ -199,9 +192,9 @@
             <br>
             <br>
             <br>
-            <label for="comment"><b>Комментарий</b></label>
+            <label for="comment"><b><c:out value="${language['comment']}"/></b></label>
             <div class="textar">
-                <textarea type="text" placeholder="Введите комментарий" name="comment" required></textarea>
+                <textarea type="text" placeholder="<c:out value="${language['enterComment']}"/>" name="comment" required></textarea>
             </div>
             <br>
 
@@ -210,10 +203,9 @@
                 <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня
             </label>
 
-
             <div class="clearfix">
-                <a class="cancelLink" href="main.jsp"><button type="button" class="cancelbtn">Отменить</button></a>
-                <button type="submit" class="signupbtn">Отправить заявку</button>
+                <a class="cancelLink" href="main.jsp"><button type="button" class="cancelbtn"><c:out value="${language['cancelButton']}"/></button></a>
+                <button type="submit" class="signupbtn"><c:out value="${language['sendButton']}"/></button>
             </div>
         </div>
     </form>

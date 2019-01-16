@@ -61,7 +61,12 @@ public class Feedback {
 
         Feedback feedback = (Feedback) o;
 
-        if (!id.equals(feedback.id)) return false;
+//!!!!!!!!!        if (!id.equals(feedback.id)) return false;
+        //!!!!!!!!!!!
+        //!!!!!!!!!!!
+        //!!!!!!!!!!!
+        //!!!!!!!!!!!
+        //!!!!!!!!!!!
         if (!text.equals(feedback.text)) return false;
         return date.equals(feedback.date);
     }

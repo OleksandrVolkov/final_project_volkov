@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css">
 </head>
 <body class="m-3">
+
 <div class="row col-md-6">
     <table class="table table-striped table-bordered table-sm">
         <tr>
@@ -13,6 +14,9 @@
             <th>Статус</th>
             <th>Услуги</th>
             <th>Оставить отзыв</th>
+            <th>Цена</th>
+            <th>Отзыв</th>
+            <th>Причина отказа</th>
         </tr>
 
 
@@ -28,7 +32,8 @@
                         <br>
                     </c:forEach>
                 </td>
-                <td>
+                    <%--${cur_request.userId}--%>
+                <%--<td>--%>
                     <%--<form method="get" action="feedback.jsp">--%>
                         <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
                         <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
@@ -45,7 +50,8 @@
                             <%--<button type="submit" class="cancel" name="feedbackButton" value="${cur_request.id}">Оставить отзыв</button>--%>
                         <%--</form>--%>
                     <%--</c:if>--%>
-                        <c:if test="${cur_request.feedback eq null}">
+                 <td>
+                        <c:if test="${cur_request.feedback eq null && (cur_request.status eq 'done' || cur_request.status eq 'rejected')}">
                             <form method="get" action="feedback.jsp">
                                 <input type="hidden" name="currentPage" value="${currentPage}">
                                 <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
@@ -54,19 +60,34 @@
                             </form>
                         </c:if>
                 </td>
-                <td>
-                    <c:if test="${cur_request.status eq 'waited'}">
-                        <form method="get" action="feedback.jsp">
-                            <input type="hidden" name="currentPage" value="${currentPage}">
-                            <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
-                            <input type="hidden" name="request_id" value="${cur_request.id}">
-                            <button type="submit" class="cancel" name="waited" value="${cur_request.id}">Подтвердить</button>
-                        </form>
-                    </c:if>
-                </td>
+                <%--<td>--%>
+                    <%--<c:if test="${cur_request.status eq 'waited'}">--%>
+                        <%--<form method="get" action="feedback.jsp">--%>
+                            <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
+                            <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
+                            <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
+                            <%--<button type="submit" class="cancel" name="waited" value="${cur_request.id}">Подтвердить</button>--%>
+                        <%--</form>--%>
+                    <%--</c:if>--%>
+                <%--</td>--%>
                 <td>
                     <c:if test="${cur_request.price ne null && cur_request.status eq 'done'}">
                         ${cur_request.price}
+                    </c:if>
+                </td>
+                <td>
+                    <c:if test="${cur_request.feedback ne null}">
+                        ${cur_request.feedback.text}
+                    </c:if>
+                </td>
+                <%--<td>--%>
+                    <%--<c:if test="${cur_request.feedback ne null}">--%>
+                        <%--${cur_request.feedback.text}--%>
+                    <%--</c:if>--%>
+                <%--</td>--%>
+                <td>
+                    <c:if test="${cur_request.status eq 'rejected'}">
+                        ${cur_request.reject.text}
                     </c:if>
                 </td>
             </tr>
@@ -104,6 +125,12 @@
         </c:if>
     </ul>
 </nav>
+
+
+<form action="/exit">
+    <input type="hidden" name="user_id" value="${cur_request.userId}">
+    <input type="submit" name="exit_account" value="Exit an account">
+</form>
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>

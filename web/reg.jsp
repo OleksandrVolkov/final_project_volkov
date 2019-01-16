@@ -210,7 +210,7 @@
 
 <div id="id01" class="modal mod3">
     <%--<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-        <a href="main.jsp">
+        <a href="/lang">
             <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
         </a>
     <form class="modal-content" action="/registration">
@@ -250,7 +250,7 @@
             <%--<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>--%>
 
             <div class="clearfix">
-                <a class="cancelLink" href="main.jsp"><button type="button" class="cancelbtn">Отменить</button></a>
+                <a class="cancelLink" href="/lang"><button type="button" class="cancelbtn">Отменить</button></a>
                 <button type="submit" class="signupbtn">Зарегистрироваться</button>
             </div>
         </div>

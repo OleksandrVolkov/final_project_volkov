@@ -8,6 +8,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class RequestRowCounter {
+    public static int getNumberOfPagesByUserId(int recordsPerPage, int userId){
+        return getNumberOfPages(getNumberOfRowsByUserId(userId), recordsPerPage);
+    }
+    public static int getNumberOfRowsByUserId(int userId){
+        return new RequestDAO(ConnectionManager.getConnection()).getAmountOfRequestsByUserId(userId);
+    }
+
     public static int getNumberOfAllRows(){
         return new RequestDAO(ConnectionManager.getConnection()).getAmountOfRequests();
     }
@@ -19,9 +26,11 @@ public class RequestRowCounter {
         return new RequestDAO(ConnectionManager.getConnection()).getAmountOfRequestsByStatus(status);
     }
 
+
     public static int getNumberOfPagesByStatus(int recordsPerPage, String firstStatus, String secondStatus) throws SQLException {
         return getNumberOfPages(getNumberOfRowsByStatus(firstStatus, secondStatus), recordsPerPage);
     }
+
     public static int getNumberOfPagesByStatus(int recordsPerPage, String status) throws SQLException {
         return getNumberOfPages(getNumberOfRowsByStatus(status), recordsPerPage);
     }

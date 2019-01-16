@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: volkov_o_o
-  Date: 01.01.19
-  Time: 02:16
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -205,35 +199,35 @@
 
 
 <div id="id01" class="modal">
-    <a href="main.jsp">
+    <a href="/lang">
         <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
     </a>
     <form class="modal-content" action="/authorization">
         <div class="container">
-            <h1>Авторизация</h1>
-            <p>Пожалуйста, введите необходимые данные для авторизации</p>
+            <h1><c:out value="${language['authorizationName']}"/></h1>
+            <p><c:out value="${language['enterData']}"/></p>
             <hr>
-            <label for="login"><b>Login</b></label>
-            <input type="text" placeholder="Login" name="login" required>
+            <label for="login"><b><c:out value="${language['login']}"/></b></label>
+            <input type="text" placeholder="<c:out value="${language['login']}"/>" name="login" required>
             <br>
             <br>
-            <label for="pas"><b>Password</b></label>
-            <input type="password" placeholder="Password" name="pas" required>
+            <label for="pas"><b><c:out value="${language['password']}"/></b></label>
+            <input type="password" placeholder="<c:out value="${language['password']}"/>" name="pas" required>
             <br>
 
             <label>
                 <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня
             </label>
             <br>
-            <div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp">Не зарегистрированы?</a></div>
+            <div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp"><c:out value="${language['isRegistered']}"/></a></div>
             <br>
             <br>
             <br>
-            <div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>
+            <div class="wrongAuthorization"><a><c:out value="${language['wrongData']}"/></a></div>
 
             <div class="clearfix">
-                <a class="cancelLink" href="main.jsp"><button type="button" class="cancelbtn">Отменить</button></a>
-                <button type="submit" class="signupbtn">Отправить заявку</button>
+                <a class="cancelLink" href="/lang"><button type="button" class="cancelbtn"><c:out value="${language['cancelRequest']}"/></button></a>
+                <button type="submit" class="signupbtn"><c:out value="${language['sendRequest']}"/></button>
             </div>
 
         </div>

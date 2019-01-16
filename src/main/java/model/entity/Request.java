@@ -11,43 +11,49 @@ public class Request {
     private Feedback feedback;
     private Reject reject;
     private Double price;
+    private int userId;
 
-    public Request(int id, String text, String status, List<Item> items, Feedback feedback) {
+    public Request(int id, String text, String status, List<Item> items, Feedback feedback, int userId) {
         this.id = id;
         this.text = text;
         this.status = status;
         this.items = items;
         this.feedback = feedback;
+        this.userId = userId;
     }
-    public Request(int id, String text, String status, Feedback feedback) {
+    public Request(int id, String text, String status, Feedback feedback, int userId) {
         this.id = id;
         this.text = text;
         this.status = status;
         this.feedback = feedback;
+        this.userId = userId;
         items = new ArrayList<>();
     }
-    public Request(String text, String status, Feedback feedback) {
+    public Request(String text, String status, Feedback feedback, int userId) {
         this.id = id;
         this.text = text;
         this.status = status;
         this.feedback = feedback;
+        this.userId = userId;
         items = new ArrayList<>();
     }
 
-    public Request(int id, String text, String status) {
+    public Request(int id, String text, String status, int userId) {
         this.id = id;
         this.text = text;
         this.status = status;
+        this.userId = userId;
         items = new ArrayList<>();
     }
 
-    public Request(String text, String status) {
+    public Request(String text, String status, int userId) {
         this.text = text;
         this.status = status;
+        this.userId = userId;
         items = new ArrayList<>();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -78,6 +84,14 @@ public class Request {
 
     public List<Item> getItems() {
         return items;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 
     public void setItems(List<Item> items) {

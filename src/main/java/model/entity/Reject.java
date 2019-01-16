@@ -27,7 +27,7 @@ public class Reject {
         this.text = text;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -50,5 +50,25 @@ public class Reject {
                 ", text='" + text + '\'' +
                 ", requestId=" + requestId +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Reject reject = (Reject) o;
+
+        if (id != reject.id) return false;
+        if (requestId != reject.requestId) return false;
+        return text.equals(reject.text);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + text.hashCode();
+        result = 31 * result + requestId;
+        return result;
     }
 }

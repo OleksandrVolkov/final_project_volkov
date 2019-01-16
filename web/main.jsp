@@ -1,10 +1,4 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: volkov_o_o
-  Date: 24.12.18
-  Time: 12:07
-  To change this template use File | Settings | File Templates.
---%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -35,11 +29,28 @@
             border-radius: 4px;
             text-decoration: none;
         }
+        .langLink a:hover{
+            background-color: #f1f1f1;
+            color: black;
+            text-decoration: none;
+        }
 
         .header a.logo {
             font-size: 25px;
             font-weight: bold;
             text-decoration: none;
+        }
+
+        .lnk a:hover{
+            font-size: 25px;
+            background-color: #f1f1f1;
+            color: black;
+        }
+
+        .header a.langLink:hover{
+            font-size: 18px;
+            background-color: #f1f1f1;
+            color: black;
         }
 
         .header a.logo:hover{
@@ -324,34 +335,49 @@
             background-color: black;
         }
 
-        .wrongName{
-            margin-left:80%;
-            margin-top: -50px;
-            position: absolute;
+        /*.wrongName{*/
+            /*margin-left:80%;*/
+            /*margin-top: -50px;*/
+            /*position: absolute;*/
+        /*}*/
+        /*.wrongSurname{*/
+            /*margin-left:80%;*/
+            /*margin-top: -50px;*/
+            /*position: absolute;*/
+        /*}*/
+        /*.wrongEmail{*/
+            /*margin-left:80%;*/
+            /*margin-top: -50px;*/
+            /*position: absolute;*/
+        /*}*/
+        /*.wrongLogin{*/
+            /*margin-left:80%;*/
+            /*margin-top: -50px;*/
+            /*position: absolute;*/
+        /*}*/
+        /*.wrongPassword{*/
+            /*margin-left:80%;*/
+            /*margin-top: -50px;*/
+            /*position: absolute;*/
+        /*}*/
+
+        /*.mod3{*/
+            /*padding-top:0px;*/
+        /*}*/
+        select {
+            -moz-appearance: none;
+            -webkit-appearance: none;
+            appearance: none;
         }
-        .wrongSurname{
-            margin-left:80%;
-            margin-top: -50px;
-            position: absolute;
-        }
-        .wrongEmail{
-            margin-left:80%;
-            margin-top: -50px;
-            position: absolute;
-        }
-        .wrongLogin{
-            margin-left:80%;
-            margin-top: -50px;
-            position: absolute;
-        }
-        .wrongPassword{
-            margin-left:80%;
-            margin-top: -50px;
-            position: absolute;
+        select::-ms-expand {  /* для IE */
+            display: none;
         }
 
-        .mod3{
-            padding-top:0px;
+
+        .auth{
+            background: none;
+            border: none;
+            text-decoration: none;
         }
 
     </style>
@@ -364,12 +390,28 @@
 <div class="header">
     <a href="#default" class="logo">AutoService</a>
     <div class="header-right">
-        <a class="active" href="#home">Главная</a>
-        <a href="#contact">Услуги</a>
-        <%--<a onclick="document.getElementById('id02').style.display='block'">Авторизация</a>--%>
-        <a href="authorization.jsp">Авторизация</a>
-        <a href="#about">О нас</a>
-        <a href="#contacts">Контакты</a>
+        <a class="active" href="#home"><c:out value="${language['header.mainItem']}"/></a>
+        <a href="#contact"><c:out value="${language['header.contactsItem']}"/></a>
+        <%--<a href="authorization.jsp"><c:out value="${language['header.authorizationItem']}"/></a>--%>
+        <a>
+            <form action="/authorization" method="get">
+                <input type="hidden" name="lang" value="${language['lang']}">
+                <input class="auth" type="submit" value="<c:out value="${language['header.authorizationItem']}"/>">
+            </form>
+        </a>
+        <a href="#about"><c:out value="${language['header.aboutUsItem']}"/></a>
+        <a href="#contacts"><c:out value="${language['header.contactsItem']}"/></a>
+            <a class="langLink">
+                <form method="get" action="/lang">
+                    <select onchange="this.form.submit()" name="lang">
+                        <option hidden disabled selected><c:out value="${language['languages.choose']}"/></option>
+                        <option value="en"><c:out value="${language['languages.en']}"/></option>
+                        <option value="ru"><c:out value="${language['languages.ru']}"/></option>
+                        <option value="ua"><c:out value="${language['languages.ua']}"/></option>
+                    </select>
+                </form>
+            </a>
+
     </div>
 </div>
 
@@ -381,138 +423,24 @@
     </div>
 </div>
 <div class="description">
-    <div class="description-head"><h2>Описание</h2></div>
+    <div class="description-head"><h2><c:out value="${language['description.name']}"/></h2></div>
     <p>
-      Наше агенство предоставляет возможность, оформив заявку, осуществить обслуживание
-        вашего автомобиля в полном объеме в кратчайшие сроки по самым оптимальным ценам
+        <c:out value="${language['description.value']}"/>
     </p>
     <%--<a class="sendRequestButton" onclick="document.getElementById('id01').style.display='block'">Отправить заявку</a>--%>
-    <a class="sendRequestButton" href="/preRequest">Отправить заявку</a>
+
+    <%--<a class="sendRequestButton" href="/preRequest"><c:out value="${language['sendRequest']}"/></a>--%>
+   <form method="get" action="/preRequest">
+    <input type="hidden" name="lang" value="<c:out value="${language['lang']}"/>">
+    <input  class="sendRequestButton" type="submit" value="<c:out value="${language['sendRequest']}"/>">
+   </form>
 </div>
-
-<%--<div id="id01" class="modal">--%>
-    <%--<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-    <%--<form class="modal-content" action="/request">--%>
-        <%--<div class="container">--%>
-            <%--<h1>Оставить заявку</h1>--%>
-            <%--<p>Пожалуйста, введите необходимые данные для оформления заявкм</p>--%>
-            <%--<hr>--%>
-            <%--<label for="selectItem"><b>Выбрать услугу</b></label>--%>
-            <%--<br>--%>
-            <%--<select name="selectItem">--%>
-                <%--<option value="kuzov">Ремонт кузова</option>--%>
-                <%--<option value="engine">Замена двигателя</option>--%>
-                <%--<option value="go">Замена ходовой</option>--%>
-                <%--<option value="bus">Замена шин</option>--%>
-            <%--</select>--%>
-            <%--<br>--%>
-            <%--<br>--%>
-            <%--<br>--%>
-            <%--<label for="comment"><b>Комментарий</b></label>--%>
-            <%--<div class="textar">--%>
-                <%--<textarea type="text" placeholder="Введите комментарий" name="comment" required></textarea>--%>
-            <%--</div>--%>
-<%--<br>--%>
-
-
-            <%--<label>--%>
-                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
-            <%--</label>--%>
-
-
-
-            <%--<div class="clearfix">--%>
-                <%--<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Отменить</button>--%>
-                <%--<button type="submit" class="signupbtn">Отправить заявку</button>--%>
-            <%--</div>--%>
-        <%--</div>--%>
-    <%--</form>--%>
-<%--</div>--%>
-
-
-
-<%--<div id="id02" class="modal">--%>
-    <%--<span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-    <%--<form class="modal-content" action="/authorization">--%>
-        <%--<div class="container">--%>
-            <%--<h1>Авторизация</h1>--%>
-            <%--<p>Пожалуйста, введите необходимые данные для авторизации</p>--%>
-            <%--<hr>--%>
-            <%--<label for="login"><b>Login</b></label>--%>
-            <%--<input type="text" placeholder="Login" name="login" required>--%>
-            <%--<br>--%>
-            <%--<br>--%>
-            <%--<label for="pas"><b>Password</b></label>--%>
-            <%--<input type="password" placeholder="Password" name="pas" required>--%>
-            <%--<br>--%>
-
-            <%--<label>--%>
-                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
-            <%--</label>--%>
-            <%--<br>--%>
-            <%--&lt;%&ndash;onclick="document.getElementById('id03').style.display='block'"&ndash;%&gt;--%>
-            <%--<div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp">Не зарегистрированы?</a></div>--%>
-            <%--<br>--%>
-            <%--<br>--%>
-            <%--<br>--%>
-            <%--<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>--%>
-
-            <%--<div class="clearfix">--%>
-                <%--<button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Отменить</button>--%>
-                <%--<button type="submit" class="signupbtn">Отправить заявку</button>--%>
-            <%--</div>--%>
-
-<%--</div>--%>
-    <%--</form>--%>
-<%--</div>--%>
-
-<%--<div id="id03" class="modal mod3">--%>
-    <%--<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-    <%--<form class="modal-content" action="/registration">--%>
-        <%--<div class="container">--%>
-            <%--<h1>Регистрация</h1>--%>
-            <%--<p>Пожалуйста, введите необходимые данные для регистрации</p>--%>
-            <%--<hr>--%>
-            <%--<label for="name"><b>Имя</b></label>--%>
-            <%--<input type="text" placeholder="Имя" name="name" required>--%>
-            <%--<div class="wrongName">Имя указано неправильно</div>--%>
-            <%--<br>--%>
-            <%--<label for="surname"><b>Фамилия</b></label>--%>
-            <%--<input type="text" placeholder="Фамилия" name="surname" required>--%>
-            <%--<div class="wrongSurname">Фамилия указана неправильно</div>--%>
-            <%--<br>--%>
-            <%--<label for="login"><b>Логин</b></label>--%>
-            <%--<input type="text" placeholder="Логин" name="login" required>--%>
-            <%--<div class="wrongLogin">Логин указан неправильно</div>--%>
-            <%--<div class="busyLogin">Логин уже занят</div>--%>
-            <%--<br>--%>
-            <%--<label for="pas"><b>Пароль</b></label>--%>
-            <%--<input type="password" placeholder="Пароль" name="pas" required>--%>
-            <%--<div class="wrongPassword">Логин указан неправильно</div>--%>
-            <%--<div class="busyPassword">Логин уже занят</div>--%>
-            <%--<br>--%>
-            <%--<label for="email"><b>Email</b></label>--%>
-            <%--<input type="text" placeholder="Email" name="email" required>--%>
-            <%--<div class="wrongEmail">Email указан неправильно</div>--%>
-            <%--<div class="busyEmail">Email уже занят</div>--%>
-
-            <%--&lt;%&ndash;<label>&ndash;%&gt;--%>
-                <%--&lt;%&ndash;<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня&ndash;%&gt;--%>
-            <%--&lt;%&ndash;</label>&ndash;%&gt;--%>
-            <%--&lt;%&ndash;<br>&ndash;%&gt;--%>
-            <%--&lt;%&ndash;&ndash;%&gt;--%>
-            <%--&lt;%&ndash;<br>&ndash;%&gt;--%>
-            <%--&lt;%&ndash;<br>&ndash;%&gt;--%>
-            <%--&lt;%&ndash;<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>&ndash;%&gt;--%>
-
-            <%--<div class="clearfix">--%>
-                <%--<button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Отменить</button>--%>
-                <%--<button type="submit" class="signupbtn">Зарегистрироваться</button>--%>
-            <%--</div>--%>
-        <%--</div>--%>
-    <%--</form>--%>
-<%--</div>--%>
-
+<%--<form method="get" action="/personalCab">--%>
+    <%--<input type="submit" name="persCab" value="Personal Cabinet">--%>
+<%--</form>--%>
+<form method="get" action="/client">
+    <input type="submit" name="persCab" value="Personal Cabinet">
+</form>
 
 <div class="footer">
 
@@ -530,7 +458,6 @@
         }
     }
 </script>
-
 </body>
 </html>
 
@@ -573,3 +500,144 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<%--<div id="id01" class="modal">--%>
+<%--<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
+<%--<form class="modal-content" action="/request">--%>
+<%--<div class="container">--%>
+<%--<h1>Оставить заявку</h1>--%>
+<%--<p>Пожалуйста, введите необходимые данные для оформления заявкм</p>--%>
+<%--<hr>--%>
+<%--<label for="selectItem"><b>Выбрать услугу</b></label>--%>
+<%--<br>--%>
+<%--<select name="selectItem">--%>
+<%--<option value="kuzov">Ремонт кузова</option>--%>
+<%--<option value="engine">Замена двигателя</option>--%>
+<%--<option value="go">Замена ходовой</option>--%>
+<%--<option value="bus">Замена шин</option>--%>
+<%--</select>--%>
+<%--<br>--%>
+<%--<br>--%>
+<%--<br>--%>
+<%--<label for="comment"><b>Комментарий</b></label>--%>
+<%--<div class="textar">--%>
+<%--<textarea type="text" placeholder="Введите комментарий" name="comment" required></textarea>--%>
+<%--</div>--%>
+<%--<br>--%>
+
+
+<%--<label>--%>
+<%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
+<%--</label>--%>
+
+
+
+<%--<div class="clearfix">--%>
+<%--<button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Отменить</button>--%>
+<%--<button type="submit" class="signupbtn">Отправить заявку</button>--%>
+<%--</div>--%>
+<%--</div>--%>
+<%--</form>--%>
+<%--</div>--%>
+
+
+
+<%--<div id="id02" class="modal">--%>
+<%--<span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
+<%--<form class="modal-content" action="/authorization">--%>
+<%--<div class="container">--%>
+<%--<h1>Авторизация</h1>--%>
+<%--<p>Пожалуйста, введите необходимые данные для авторизации</p>--%>
+<%--<hr>--%>
+<%--<label for="login"><b>Login</b></label>--%>
+<%--<input type="text" placeholder="Login" name="login" required>--%>
+<%--<br>--%>
+<%--<br>--%>
+<%--<label for="pas"><b>Password</b></label>--%>
+<%--<input type="password" placeholder="Password" name="pas" required>--%>
+<%--<br>--%>
+
+<%--<label>--%>
+<%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
+<%--</label>--%>
+<%--<br>--%>
+<%--&lt;%&ndash;onclick="document.getElementById('id03').style.display='block'"&ndash;%&gt;--%>
+<%--<div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp">Не зарегистрированы?</a></div>--%>
+<%--<br>--%>
+<%--<br>--%>
+<%--<br>--%>
+<%--<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>--%>
+
+<%--<div class="clearfix">--%>
+<%--<button type="button" onclick="document.getElementById('id02').style.display='none'" class="cancelbtn">Отменить</button>--%>
+<%--<button type="submit" class="signupbtn">Отправить заявку</button>--%>
+<%--</div>--%>
+
+<%--</div>--%>
+<%--</form>--%>
+<%--</div>--%>
+
+<%--<div id="id03" class="modal mod3">--%>
+<%--<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
+<%--<form class="modal-content" action="/registration">--%>
+<%--<div class="container">--%>
+<%--<h1>Регистрация</h1>--%>
+<%--<p>Пожалуйста, введите необходимые данные для регистрации</p>--%>
+<%--<hr>--%>
+<%--<label for="name"><b>Имя</b></label>--%>
+<%--<input type="text" placeholder="Имя" name="name" required>--%>
+<%--<div class="wrongName">Имя указано неправильно</div>--%>
+<%--<br>--%>
+<%--<label for="surname"><b>Фамилия</b></label>--%>
+<%--<input type="text" placeholder="Фамилия" name="surname" required>--%>
+<%--<div class="wrongSurname">Фамилия указана неправильно</div>--%>
+<%--<br>--%>
+<%--<label for="login"><b>Логин</b></label>--%>
+<%--<input type="text" placeholder="Логин" name="login" required>--%>
+<%--<div class="wrongLogin">Логин указан неправильно</div>--%>
+<%--<div class="busyLogin">Логин уже занят</div>--%>
+<%--<br>--%>
+<%--<label for="pas"><b>Пароль</b></label>--%>
+<%--<input type="password" placeholder="Пароль" name="pas" required>--%>
+<%--<div class="wrongPassword">Логин указан неправильно</div>--%>
+<%--<div class="busyPassword">Логин уже занят</div>--%>
+<%--<br>--%>
+<%--<label for="email"><b>Email</b></label>--%>
+<%--<input type="text" placeholder="Email" name="email" required>--%>
+<%--<div class="wrongEmail">Email указан неправильно</div>--%>
+<%--<div class="busyEmail">Email уже занят</div>--%>
+
+<%--&lt;%&ndash;<label>&ndash;%&gt;--%>
+<%--&lt;%&ndash;<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня&ndash;%&gt;--%>
+<%--&lt;%&ndash;</label>&ndash;%&gt;--%>
+<%--&lt;%&ndash;<br>&ndash;%&gt;--%>
+<%--&lt;%&ndash;&ndash;%&gt;--%>
+<%--&lt;%&ndash;<br>&ndash;%&gt;--%>
+<%--&lt;%&ndash;<br>&ndash;%&gt;--%>
+<%--&lt;%&ndash;<div class="wrongAuthorization"><a>Не верно введенные данные, повторите ввод</a></div>&ndash;%&gt;--%>
+
+<%--<div class="clearfix">--%>
+<%--<button type="button" onclick="document.getElementById('id03').style.display='none'" class="cancelbtn">Отменить</button>--%>
+<%--<button type="submit" class="signupbtn">Зарегистрироваться</button>--%>
+<%--</div>--%>
+<%--</div>--%>
+<%--</form>--%>
+<%--</div>--%>
