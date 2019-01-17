@@ -38,7 +38,7 @@ public class TestItemDAO {
     public Request request;
 
     @Parameterized.Parameter(4)
-    public List<Item> items;
+    public Item items;
 
 
     @Parameterized.Parameters
@@ -49,14 +49,14 @@ public class TestItemDAO {
                         "lsakdnad",
                         "safj0sa9fja",
                         new Request("sadpdsa", "is being seen", 4),
-                        Arrays.asList(new Item[]{new Item("isa", "sapdj"), new Item("apsod", "pijsad")})
+                        new Item("isa", "sapdj")
                 },
                 {
                         new Item("Item", "New Info"),
                         "pojsadpoa",
                         "dnsaoisad",
                         new Request("oiashas", "is being seen", 5),
-                        Arrays.asList(new Item[]{new Item("lknasd", "isad"), new Item("nwa", "said")})
+                        new Item("lknasd", "isad")
                 }
                 }
         );
@@ -118,19 +118,19 @@ public class TestItemDAO {
         itemDAO.delete(item.getId());
     }
 
-    @Test
-    public void testGetItemsByRequest(){
-        itemDAO = new ItemDAO(ConnectionManager.getConnection());
-        for(int i = 0;i<items.size(); i++)
-            itemDAO.create(items.get(i));
-
-        request.setItems(items);
-        requestDAO.create(request);
-
-        List<Item> itemsVal = itemDAO.getItemsByRequest(request);
-        requestDAO.delete(request.getId());
-        assertEquals(items, itemsVal);
-        for(int i = 0;i<items.size(); i++)
-            itemDAO.delete(items.get(i).getId());
-    }
+//    @Test
+//    public void testGetItemsByRequest(){
+//        itemDAO = new ItemDAO(ConnectionManager.getConnection());
+//        for(int i = 0;i<items.size(); i++)
+//            itemDAO.create(items.get(i));
+//
+//        request_actions.setItems(items);
+//        requestDAO.create(request_actions);
+//
+//        List<Item> itemsVal = itemDAO.getItemsByRequest(request_actions);
+//        requestDAO.delete(request_actions.getId());
+//        assertEquals(items, itemsVal);
+//        for(int i = 0;i<items.size(); i++)
+//            itemDAO.delete(items.get(i).getId());
+//    }
 }

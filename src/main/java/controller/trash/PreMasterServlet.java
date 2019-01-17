@@ -1,4 +1,4 @@
-package controller;
+package controller.trash;
 
 import model.dao.ItemDAO;
 import model.dao.RequestDAO;
@@ -50,6 +50,6 @@ public class PreMasterServlet extends HttpServlet{
 //
 //        req.setAttribute("requests", requests);
 //
-//        req.getRequestDispatcher("request.jsp").forward(req, resp);
+//        req.getRequestDispatcher("request_actions.jsp").forward(req, resp);
     }
 }

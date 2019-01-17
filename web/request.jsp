@@ -199,14 +199,15 @@
             <br>
 
 
-            <label>
-                <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня
-            </label>
+            <%--<label>--%>
+                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
+            <%--</label>--%>
 
             <div class="clearfix">
                 <a class="cancelLink" href="main.jsp"><button type="button" class="cancelbtn"><c:out value="${language['cancelButton']}"/></button></a>
                 <button type="submit" class="signupbtn"><c:out value="${language['sendButton']}"/></button>
             </div>
+            <input type="hidden" name="action" value="send">
         </div>
     </form>
 </div>

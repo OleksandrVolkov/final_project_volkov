@@ -7,17 +7,19 @@ public class Request {
     private int id;
     private String text;
     private String status;
-    private List<Item> items;
+//    private List<Item> items;
+//    private Item item;
+    private Integer itemId;
     private Feedback feedback;
     private Reject reject;
     private Double price;
     private int userId;
 
-    public Request(int id, String text, String status, List<Item> items, Feedback feedback, int userId) {
+    public Request(int id, String text, String status, int itemId, Feedback feedback, int userId) {
         this.id = id;
         this.text = text;
         this.status = status;
-        this.items = items;
+        this.itemId = itemId;
         this.feedback = feedback;
         this.userId = userId;
     }
@@ -27,7 +29,6 @@ public class Request {
         this.status = status;
         this.feedback = feedback;
         this.userId = userId;
-        items = new ArrayList<>();
     }
     public Request(String text, String status, Feedback feedback, int userId) {
         this.id = id;
@@ -35,22 +36,31 @@ public class Request {
         this.status = status;
         this.feedback = feedback;
         this.userId = userId;
-        items = new ArrayList<>();
     }
 
-    public Request(int id, String text, String status, int userId) {
+    public Request(int id, String text, String status, int userId, int itemId) {
         this.id = id;
         this.text = text;
         this.status = status;
         this.userId = userId;
-        items = new ArrayList<>();
+        this.itemId = itemId;
     }
 
     public Request(String text, String status, int userId) {
         this.text = text;
         this.status = status;
         this.userId = userId;
-        items = new ArrayList<>();
+    }
+    public Request(String text, String status, int userId, int itemId) {
+        this.text = text;
+        this.status = status;
+        this.userId = userId;
+        this.itemId = itemId;
+    }
+
+    public Request(String text, String status){
+        this.text = text;
+        this.status = status;
     }
 
     public Integer getId() {
@@ -70,10 +80,6 @@ public class Request {
         this.text = text;
     }
 
-    public void addItem(Item item){
-        items.add(item);
-    }
-
     public String getStatus() {
         return status;
     }
@@ -82,9 +88,6 @@ public class Request {
         this.status = status;
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
 
     public int getUserId() {
         return userId;
@@ -94,9 +97,6 @@ public class Request {
         this.userId = userId;
     }
 
-    public void setItems(List<Item> items) {
-        this.items = items;
-    }
 
     public Feedback getFeedback() {
         return feedback;
@@ -122,13 +122,22 @@ public class Request {
         this.price = price;
     }
 
+
+    public Integer getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(Integer itemId) {
+        this.itemId = itemId;
+    }
+
     @Override
     public String toString() {
         return "Request{" +
                 "id=" + id +
                 ", text='" + text + '\'' +
                 ", status='" + status + '\'' +
-                ", items=" + items +
+                ", itemId=" + itemId +
                 ", feedback=" + feedback +
                 '}';
     }
@@ -143,7 +152,7 @@ public class Request {
         if (id != request.id) return false;
         if (text != null ? !text.equals(request.text) : request.text != null) return false;
         if (!status.equals(request.status)) return false;
-        if (!items.equals(request.items)) return false;
+        if (!itemId.equals(request.itemId)) return false;
         return feedback != null ? feedback.equals(request.feedback) : request.feedback == null;
     }
 
@@ -152,7 +161,7 @@ public class Request {
         int result = id;
         result = 31 * result + (text != null ? text.hashCode() : 0);
         result = 31 * result + status.hashCode();
-        result = 31 * result + items.hashCode();
+        result = 31 * result + itemId.hashCode();
         result = 31 * result + (feedback != null ? feedback.hashCode() : 0);
         return result;
     }

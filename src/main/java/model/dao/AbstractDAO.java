@@ -3,6 +3,8 @@ package model.dao;
 import java.sql.*;
 import java.util.List;
 
+
+
 public abstract class AbstractDAO<T extends Object> {
     protected Connection connection;
 //    protected Statement statement;

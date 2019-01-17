@@ -16,37 +16,7 @@ public class LanguageHandler {
         properties = new Properties();
     }
 
-//    public Map<String, String> getMainPageEn(){
-//        return getMainPage("mainPage.properties");
-//    }
-//
-//    public Map<String, String> getMainPageRus(){
-//        return getMainPage("mainPage_ru_RU.properties");
-//    }
-//
-//    public Map<String, String> getMainPageUa(){
-//        return getMainPage("mainPage_uk_UA.properties");
-//    }
-//
-//    private Map<String, String> getMainPage(String path){
-//        Map<String, String> hashMap = null;
-//        String rootPath = Thread.currentThread().getContextClassLoader().getResource("").getPath();
-//        String appConfigPath = rootPath + path;
-//        try {
-//            properties.load(new FileInputStream(appConfigPath));
-//            hashMap = properties.entrySet().stream().collect(
-//                    Collectors.toMap(
-//                            e -> e.getKey().toString(),
-//                            e -> e.getValue().toString()
-//                    )
-//            );
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return hashMap;
-//    }
+
 
     public static Map<String, String> getHashMapOfMainPage(Language language){
         switch(language){
@@ -60,6 +30,17 @@ public class LanguageHandler {
         return null;
     }
 
+    public static Map<String, String> getHashMapOfRegistrationPage(Language language){
+        switch(language){
+            case ENGLISH:
+                return convertResourceBundleToMap(ResourceBundle.getBundle("reg", new Locale("en", "UK")));
+            case RUSSIAN:
+                return convertResourceBundleToMap(ResourceBundle.getBundle("reg", new Locale("ru", "RU")));
+            case UKRAINIAN:
+                return convertResourceBundleToMap(ResourceBundle.getBundle("reg", new Locale("uk", "UA")));
+        }
+        return null;
+    }
     public static Map<String, String> getHashMapOfRequestForm(Language language){
         switch(language){
             case ENGLISH:
@@ -83,6 +64,8 @@ public class LanguageHandler {
         return null;
     }
 
+
+
     private static Map<String, String> convertResourceBundleToMap(ResourceBundle resource) {
         Map<String, String> map = new HashMap<>();
         Enumeration<String> keys = resource.getKeys();
@@ -93,5 +76,20 @@ public class LanguageHandler {
         return map;
     }
 
+
+
+    public static Map<String, String> getHashMapOfValuesByPageUrl(String pageUrl, Language lang){
+        switch (pageUrl){
+            case "main.jsp":
+                return getHashMapOfMainPage(lang);
+            case "authorization.jsp":
+                return getHashMapOfAuthorizationForm(lang);
+            case "reg.jsp":
+                return getHashMapOfRegistrationPage(lang);
+            case "request_actions.jsp":
+                return getHashMapOfRequestForm(lang);
+        }
+        return null;
+    }
 
 }

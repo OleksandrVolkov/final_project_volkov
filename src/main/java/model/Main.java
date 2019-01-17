@@ -32,8 +32,8 @@ public class Main{
 
 //        RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
 //        List<Request> requests = requestDAO.findAll();
-//        for(Request request: requests)
-//            System.out.println(request);
+//        for(Request request_actions: requests)
+//            System.out.println(request_actions);
 
 //        UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
 //        List<User> users = userDAO.findAll();
@@ -48,10 +48,9 @@ public class Main{
 //
 //        ResourceBundle RB = ResourceBundle.getBundle("app", new Locale(lang));
 
-        System.out.println(LanguageHandler.getHashMapOfMainPage(Language.ENGLISH));
+//        System.out.println(LanguageHandler.getHashMapOfMainPage(Language.ENGLISH));
 
-
-
+//        System.out.println(Language.getLanguage("en"));
 
 
 

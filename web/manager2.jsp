@@ -14,6 +14,7 @@
             <th>Items</th>
             <th>Cancel</th>
             <th>Confirm</th>
+            <th>Feedback</th>
         </tr>
 
 
@@ -27,24 +28,27 @@
                         <%--${cur_request.getItems().get(0).getInfo()}--%>
                 <%--</td>--%>
                 <td>
-                    <c:forEach items="${cur_request.getItems()}" var="cur_item">
-                        ${cur_item.getName()}
-                        <br>
-                        ${cur_item.getInfo()}
-                    </c:forEach>
+                    <%--<c:forEach items="${cur_request.getItems()}" var="cur_item">--%>
+                        <%--${cur_item.getName()}--%>
+                        <%--<br>--%>
+                        <%--${cur_item.getInfo()}--%>
+                    <%--</c:forEach>--%>
+                            ${cur_request.itemId}
                 </td>
                 <td>
-                    <%--<form method="get" action="/cancelReq">--%>
-                    <form method="get" action="rejectionForm.jsp">
-                        <input type="hidden" name="currentPage" value="${currentPage}">
-                        <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
-                        <input type="hidden" name="request_id" value="${cur_request.id}">
-                        <button type="submit" class="cancel" name="cancelButton" value="${cur_request.id}">Отменить</button>
-                    </form>
+                    <%--<form method="get" actions="/cancelReq">--%>
+                        <c:if test="${cur_request.status eq 'not seen'}">
+                            <form method="get" action="rejectionForm.jsp">
+                                <input type="hidden" name="currentPage" value="${currentPage}">
+                                <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
+                                <input type="hidden" name="request_id" value="${cur_request.id}">
+                                <button type="submit" class="cancel" name="cancelButton" value="${cur_request.id}">Отменить</button>
+                            </form>
+                        </c:if>
                 </td>
                 <td>
                         <%--<c:if test="${notNeededToConfirm.contains(cur_request.id)}">--%>
-                            <%--<form method="get" action="manager_price.jsp">--%>
+                            <%--<form method="get" actions="manager_price.jsp">--%>
                                 <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
                                 <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
                                 <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
@@ -59,6 +63,12 @@
                                     <button type="submit" class="accept" name="confirmButton" value="${cur_request.id}">Подтвердить</button>
                                 </form>
                             </c:if>
+                </td>
+
+                <td>
+                    <c:if test="${cur_request.feedback ne null}">
+                        ${cur_request.feedback.text}
+                    </c:if>
                 </td>
             </tr>
         </c:forEach>
@@ -95,6 +105,13 @@
         </c:if>
     </ul>
 </nav>
+
+<form action="/account" method="get">
+    <input type="submit" name="exit_account" value="Exit an account">
+    <input type="hidden" name="action" value="logout">
+    <c:set var = "role" scope = "session" value = "manager"/>
+</form>
+
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>

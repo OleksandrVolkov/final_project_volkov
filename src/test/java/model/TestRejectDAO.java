@@ -3,11 +3,9 @@ package model;
 import model.dao.ItemDAO;
 import model.dao.RejectDAO;
 import model.dao.RequestDAO;
+import model.dao.UserDAO;
 import model.dao.connection.ConnectionManager;
-import model.entity.Feedback;
-import model.entity.Item;
-import model.entity.Reject;
-import model.entity.Request;
+import model.entity.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +20,8 @@ import static org.junit.Assert.*;
 public class TestRejectDAO {
     private RejectDAO rejectDAO;
     private RequestDAO requestDAO;
+    private UserDAO userDAO;
+    private ItemDAO itemDAO;
 
     @Parameterized.Parameter
     public Reject reject;
@@ -29,16 +29,30 @@ public class TestRejectDAO {
     @Parameterized.Parameter(1)
     public Request request;
 
+    @Parameterized.Parameter(2)
+    public User user;
+
+    @Parameterized.Parameter(3)
+    public Item item;
+
+
+
+
+
     @Parameterized.Parameters
     public static Collection data(){
         return Arrays.asList( new Object[][]{
-                {
-                        new Reject("Just info"),
-                        new Request("sadopkasd", "is being seen", 2)
-                },
-                {
-                        new Reject("Item"),
-                        new Request("already done", "is being seen", 3)}
+                        {
+                                new Reject("Just info"),
+                                new Request("sadopkasd", "is being seen"),
+                                new User("Name","Surname","my_login129","sadsad","al4@gmail.com","client"),
+                                new Item("asdino","sdaopjads")
+                        }
+//                },
+//                {
+//                        new Reject("Item"),
+//                        new Request("already done", "is being seen", 3)
+//                }
                 }
         );
     }
@@ -48,19 +62,35 @@ public class TestRejectDAO {
     public void init(){
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
         requestDAO = new RequestDAO(ConnectionManager.getConnection());
+        itemDAO = new ItemDAO(ConnectionManager.getConnection());
+        userDAO = new UserDAO(ConnectionManager.getConnection());
+    }
+
+    private void create(Item item, User user, Request request, Reject reject){
+        userDAO.create(user);
+        itemDAO.create(item);
+        System.out.println(user);
+        request.setReject(reject);
+        request.setUserId(user.getId());
+        request.setItemId(item.getId());
+        requestDAO.create(request);
+        reject.setRequestId(request.getId());
+        rejectDAO.create(reject);
+    }
+
+    private void delete(Item item, User user, Request request, Reject reject){
+        rejectDAO.delete(reject.getId());
+        requestDAO.delete(request.getId());
+        itemDAO.delete(item.getId());
+        userDAO.delete(user.getId());
     }
 
     @Test
     public void testCreate(){
-        request.setReject(reject);
-        requestDAO.create(request);
-        reject.setRequestId(request.getId());
-
-        rejectDAO.create(reject);
+        create(item, user, request, reject);
         Reject curReject = rejectDAO.findEntityById(reject.getId());
-        rejectDAO.delete(reject.getId());
-        requestDAO.delete(request.getId());
         assertEquals(reject, curReject);
+        delete(item, user, request, reject);
     }
 
 
@@ -68,56 +98,39 @@ public class TestRejectDAO {
     @Test
     public void testUpdate(){
         String curText = "sadsdaa";
-        request.setReject(reject);
-        requestDAO.create(request);
-        reject.setRequestId(request.getId());
+        create(item, user, request, reject);
 
-        rejectDAO.create(reject);
         reject.setText(curText);
         rejectDAO.update(reject, reject.getId());
         Reject rejectTemp = rejectDAO.findEntityById(reject.getId());
         assertEquals(reject, rejectTemp);
-        rejectDAO.delete(reject.getId());
-        requestDAO.delete(request.getId());
+        delete(item, user, request, reject);
     }
 
     @Test
     public void testFindEntityById(){
-        request.setReject(reject);
-        requestDAO.create(request);
-        reject.setRequestId(request.getId());
-
-        rejectDAO.create(reject);
+        create(item, user, request, reject);
         Reject tempReject = rejectDAO.findEntityById(reject.getId());
         assertEquals(reject, tempReject);
-        rejectDAO.delete(reject.getId());
-        requestDAO.delete(request.getId());
+        delete(item, user, request, reject);
     }
 
     @Test
     public void getLastInsertedRejectIndex(){
-        request.setReject(reject);
-        requestDAO.create(request);
-        reject.setRequestId(request.getId());
-
-        rejectDAO.create(reject);
+        create(item, user, request, reject);
         Integer rejectId = rejectDAO.getLastInsertedRejectIndex();
         Reject rejectTemp = rejectDAO.findEntityById(reject.getId());
         assertEquals(reject.getId(), rejectId, rejectTemp.getId());
-        rejectDAO.delete(reject.getId());
-        requestDAO.delete(request.getId());
+        delete(item, user, request, reject);
     }
 
     @Test
     public void testDelete(){
-        request.setReject(reject);
-        requestDAO.create(request);
-        reject.setRequestId(request.getId());
-
-        rejectDAO.create(reject);
-        rejectDAO.delete(reject.getId());
+        create(item, user, request, reject);
+        delete(item, user, request, reject);
+//        rejectDAO.delete(reject.getId());
         assertNull(rejectDAO.findEntityById(reject.getId()));
-        requestDAO.delete(request.getId());
+//        requestDAO.delete(request_actions.getId());
     }
 
 }

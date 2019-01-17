@@ -8,32 +8,61 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
+
+/**
+ *  <h1>FeedbackDAO class</h1>
+ *  FeedbackDAO represents a way to access database to the corresponding to the
+ *  Feedback entity table "feedbacks" via JDBC API by SQL server.
+ *  It represents the way to access to the value needed and make basic CRUD (create,
+ *  read, update, delete) operations and some more added functionality.
+ *  Moreover, it gives the opportunity to initialize the entity
+ *  objects(Feedback class) on the side of model which makes it easier to manipulate with the objects
+ *  in the application in the object-oriented way.
+ *  It extends an abstract AbstractDAO class and therefore overrides some its methods.
+ *
+ *
+ * @author  Oleksandr Volkov
+ * @version 1.0
+ * @since   2019-01-15
+ */
+
+
 public class FeedbackDAO extends AbstractDAO<Feedback>{
     private UserDAO userDAO;
     private RequestDAO requestDAO;
     private static Logger log = Logger.getLogger(Feedback.class);
 
-
+//    /**
+//     * This constructor is used to initialize the connection via
+//     * sending it to the super class AbstractDAO
+//     */
     public FeedbackDAO(Connection connection){
         super(connection);
         userDAO = new UserDAO(ConnectionManager.getConnection());
         requestDAO = new RequestDAO(ConnectionManager.getConnection());
     }
 
+
+    /**
+     * This method is used to find all feedbacks from the corresponding table in the
+     * database.
+     * @return List of all of the feedbacks available in the table.
+     */
     @Override
     public List<Feedback> findAll() {
         log.trace("Instantiating UserDAO class and RequestDAO class");
         List<Feedback> feedbacks = new ArrayList<>();
         String query = "SELECT * FROM feedbacks;";
 
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             //log.trace("open connection");
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
             log.trace("Getting result set from the statement");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 log.trace("Creating a feedback to add in array of feedbacks");
                 int id = resultSet.getInt("id");
@@ -41,12 +70,12 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
                 String date = resultSet.getString("feedback_date");
                 int requestId = resultSet.getInt("request_id");
                 feedbacks.add(new Feedback(id, text, date, requestId));
-                log.info("Feedback with ID " + id + " and with the request id " + requestId + " is added to the array");
+                log.info("Feedback with ID " + id + " and with the request_actions id " + requestId + " is added to the array");
             }
         } catch (SQLException e) {
             log.trace("Cannot iterate through the result set", e);
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
 
@@ -54,22 +83,27 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
         return feedbacks;
     }
 
+
+    /**
+     * This method is used to find feedback by its id in the database
+     * @param id This is id of the feedback is needed
+     * @return Feedback It returns the feedback by the given id
+     */
     @Override
     public Feedback findEntityById(int id) {
         log.info("finding feedback with id: " + id);
         log.trace("creating userDAO and requestDAO objects");
-//        userDAO = new UserDAO(connection);
-//        requestDAO = new RequestDAO(connection);
         Feedback feedback = null;
-        String query = "SELECT * FROM feedbacks WHERE id = " + id + ";";
+        String query = "SELECT * FROM feedbacks WHERE id = ?;";
 
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             log.trace("Creating statement to the connection");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
             log.trace("Getting result set from the statement");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                  log.trace("Creating feedback to return");
                  String text = resultSet.getString("feedback_text");
@@ -84,43 +118,70 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
             e.printStackTrace();
             return null;
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
     }
 
+    /**
+     * This method is used to delete feedback by its id
+     * @param id This is id of the feedback is needed
+     * @return boolean It returns the boolean value depending on whether feedback was deleted
+     * (by given id)
+     */
     @Override
     public boolean delete(int id) {
         log.info("Deleting feedback with id " + id);
         log.info("Instantiating UserDAO and RequestDAO objects");
 //        userDAO = new UserDAO(connection);
 //        requestDAO = new RequestDAO(connection);
-        String query = "DELETE FROM feedbacks WHERE id = " + id + ";";
-        Statement statement = null;
+
+        String query = "DELETE FROM feedbacks WHERE id = ?;";
+        PreparedStatement preparedStatement = null;
         try {
+            connection.setAutoCommit(false);
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
             log.trace("Executing update");
-            statement.executeUpdate(query);
+            preparedStatement.executeUpdate();
+            connection.commit();
             return true;
         } catch (SQLException e) {
-            log.warn("Error a bit:(", e);
+            log.warn("Can't execute the query", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             return false;
         } finally {
-            close(statement);
+            close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+
+    /**
+     * This method is used to create feedback by given object of the corresponding class
+     * @param feedback This is the feedback which values will be inserted into the table "feedbacks"
+     * @return boolean It returns the boolean value depending on whether feedback was successfully created
+     */
     @Override
     public boolean create(Feedback feedback) {
-        log.info("Creating feedback with the request id " + feedback.getRequestId());
+        log.info("Creating feedback with the request_actions id " + feedback.getRequestId());
         log.trace("Creating userDAO and requestDAO");
-//        userDAO = new UserDAO(connection);
-//        requestDAO = new RequestDAO(connection);
 
         PreparedStatement preparedStatement = null;
         String query = "INSERT INTO feedbacks(feedback_text, feedback_date, request_id) VALUES(?,?,?);";
         try{
+            connection.setAutoCommit(false);
             log.trace("Creating prepared statement ");
             preparedStatement = connection.prepareStatement(query);
             String text = feedback.getText();
@@ -133,90 +194,151 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
             log.trace("Executing prepared statement");
             preparedStatement.execute();
             feedback.setId(this.getLastInsertedFeedbackIndex());
+            connection.commit();
         } catch(SQLException e){
-            log.trace("Error a bit:(");
+            log.warn("Can't execute the query", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+//                connection.setAutoCommit(true);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             log.trace("Returning false");
             return false;
         } finally {
             close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         log.trace("Setting id to the returned feedback object");
         log.trace("Returning true value");
         return true;
     }
 
+
+    /**
+     * This method is used to get index of the last inserted feedback.
+     * It is mainly used while creating feedback so that get its index for
+     * future handling in the application.
+     * @return Integer It returns the index of the last inserted feedback
+     */
     public Integer getLastInsertedFeedbackIndex(){
         log.info("Getting index of the given feedback");
-        //  String query = "SELECT * FROM items WHERE name = " + name + ";";
-//        String query = "SELECT * FROM feedbacks WHERE feedback_text = '" + feedback.getText() + "' AND feedback_date = '" + feedback.getDate() + "';";
-       String query = "SELECT MAX( id ) AS max_id FROM feedbacks;";
+        String query = "SELECT MAX( id ) AS max_id FROM feedbacks;";
 
-       ResultSet resultSet = null;
-       Statement statement = null;
+        ResultSet resultSet = null;
+        PreparedStatement preparedStatement = null;
         try {
+            connection.setAutoCommit(false);
             log.trace("Creating statement");
-            statement = connection.prepareStatement(query);
+            preparedStatement = connection.prepareStatement(query);
             log.trace("Creating result set");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
             int id = 0;
             while (resultSet.next()) {
                 id = resultSet.getInt("max_id");
             }
 
             log.trace("Returning id");
+            connection.commit();
             return id;
         } catch (SQLException e) {
-            log.warn("Error a bit:( ", e);
+            log.warn("Can't execute the query", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             return null;
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+    /**
+     * This method is used to update feedback value in the database by its key.
+     * @param feedback This is the feedback which values will be inserted into the table "feedbacks"
+     * @param key This is the id which is used to update the corresponding value
+     * @return Feedback It returns given feedback
+     */
     @Override
     public Feedback update(Feedback feedback, int key) {
         log.info("Updating feedaback with id = " + key);
-        log.trace("Creating userDAO and request DAO objects");
-//        userDAO = new UserDAO(connection);
-//        requestDAO = new RequestDAO(connection);
-        String query = "UPDATE feedbacks SET feedback_text = ?, feedback_date = ?, request_id = ? WHERE id = "+key+";";
+        log.trace("Creating userDAO and request_actions DAO objects");
+        String query = "UPDATE feedbacks SET feedback_text = ?, feedback_date = ?, request_id = ? WHERE id = ?;";
 
         PreparedStatement preparedStatement = null;
         try {
+            connection.setAutoCommit(false);
             log.trace("Creating prepared statement");
             preparedStatement = connection.prepareStatement(query);
 
             preparedStatement.setString(1, feedback.getText());
             preparedStatement.setString(2, feedback.getDate());
             preparedStatement.setInt(3, feedback.getRequestId());
-//            preparedStatement.setInt(3, feedback.getUser().getId());
-//            preparedStatement.setInt(4, feedback.getRequest().getId());
+            preparedStatement.setInt(4, key);
 
             log.trace("Executing update");
             preparedStatement.executeUpdate();
             log.trace("Returning feedback with id = " + key);
+            connection.commit();
+
             return feedback;
         } catch (SQLException e) {
-            log.warn("Error a bit:( ", e);
+            log.warn("Can't execute the query", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+                connection.setAutoCommit(true);
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             return null;
         } finally {
             close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
+
+
+
+    /**
+     * This method is used to get feedback value in the database by its request_actions id.
+     * @param requestId This is the request_actions id which is used to get the searched feedback
+     * @return Feedback It returns the feedback whiich is found by the requestId.
+     */
     public Feedback getFeedbackByRequestId(int requestId){
-        log.info("Getting feedback by request id = " + requestId);
-        String query = "SELECT * FROM feedbacks WHERE request_id = " + requestId + ";";
+        log.info("Getting feedback by request_actions id = " + requestId);
+        String query = "SELECT * FROM feedbacks WHERE request_id = ?;";
 
         Feedback feedback = null;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, requestId);
             log.trace("Creating ResultSet");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
 
             if(resultSet.next()){
                 log.trace("Getting values from the ResultSet");
@@ -226,12 +348,12 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
                 feedback = new Feedback(text, date, requestId);
             }
         } catch (SQLException e) {
-            log.warn("Error a bit:(", e);
+            log.warn("Can't execute the query", e);
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
-        log.trace("Returning feedback with request id = " + requestId);
+        log.trace("Returning feedback with request_actions id = " + requestId);
         return feedback;
     }
 }

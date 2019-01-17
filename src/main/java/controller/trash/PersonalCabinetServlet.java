@@ -1,4 +1,4 @@
-package controller;
+package controller.trash;
 
 import model.dao.RequestDAO;
 import model.dao.UserDAO;
@@ -38,11 +38,11 @@ public class PersonalCabinetServlet extends HttpServlet{
 //
 //                List<Request> temp = new ArrayList<>();
 //
-//                for(Request request : requests){
-//                    User user = userDAO.findEntityById(request.getUserId());
+//                for(Request request_actions : requests){
+//                    User user = userDAO.findEntityById(request_actions.getUserId());
 //                    if(user != null)
 //                        if(user.getLogin().equals(loginSession))
-//                            temp.add(request);
+//                            temp.add(request_actions);
 //                }
 //
 //

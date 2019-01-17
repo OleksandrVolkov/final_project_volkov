@@ -215,7 +215,7 @@
         <a href="main.jsp">
             <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
         </a>
-        <form method="get" class="modal-content" action="/cancelReq">
+        <form method="get" class="modal-content" action="/request">
             <div class="container">
                 <h1>Укажите причину</h1>
                 <p>Пожалуйста, введите необходимые данные для указание причины</p>
@@ -226,7 +226,7 @@
                 <input id="curPage" type="hidden" name="currentPage" value="${currentPage}">
                 <input id="recPerPage" type="hidden" name="recordsPerPage" value="${recordsPerPage}">
                 <input id="curReqId" type="hidden" name="cur_request_id" value="${request_id}">
-
+                <input type="hidden" name="action" value="reject">
                 <br>
 
                 <div class="clearfix">

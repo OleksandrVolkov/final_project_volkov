@@ -18,6 +18,10 @@ public class Feedback {
         this.date = date;
         this.requestId = requestId;
     }
+    public Feedback(String text, String date) {
+        this.text = text;
+        this.date = date;
+    }
 
 
 

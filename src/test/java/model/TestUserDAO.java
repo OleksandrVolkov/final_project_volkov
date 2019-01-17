@@ -24,10 +24,11 @@ public class TestUserDAO {
     public User user;
 
 
+
     @Parameterized.Parameters
     public static Collection data(){
         return Arrays.asList( new Object[][]{
-                        {new User("Name","Surname","my_login123","sadsad","al@gmail.com","client")}
+                        {new User("Name","Surname","my_lsdaogin121","sadsad","alasd2@gmail.com","client")}
                 }
         );
     }
@@ -88,6 +89,7 @@ public class TestUserDAO {
     public void testValidateUser(){
         userDAO.create(user);
         boolean isValidated = userDAO.validateUser(user.getLogin(), user.getPassword());
+        System.out.println(isValidated);
         userDAO.delete(user.getId());
         assertTrue(isValidated);
 

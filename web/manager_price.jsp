@@ -215,7 +215,7 @@
     <a href="main.jsp">
         <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
     </a>
-    <form method="get" class="modal-content" action="/acceptReq">
+    <form method="get" class="modal-content" action="/request">
         <div class="container">
             <h1>Цена</h1>
             <p>Укажите цену для данного заказа</p>
@@ -226,6 +226,7 @@
             <input id="curPage" type="hidden" name="currentPage" value="${currentPage}">
             <input id="recPerPage" type="hidden" name="recordsPerPage" value="${recordsPerPage}">
             <input id="curReqId" type="hidden" name="cur_request_id" value="${request_id}">
+            <input type="hidden" name="action" value="accept">
 
             <br>
 

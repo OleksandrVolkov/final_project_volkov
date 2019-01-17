@@ -36,8 +36,8 @@ public class ClientServlet extends HttpServlet {
 
 //        List<Request> requests = null;
         int nOfPages = 0;
-        String firstStatus = "done";
-        String secondStatus = "rejected";
+//        String firstStatus = "done";
+//        String secondStatus = "rejected";
 
 //        try {
 ////            requests = this.getLimitedRequestsByStatus(currentPage, recordsPerPage, firstStatus, secondStatus);
@@ -59,9 +59,9 @@ public class ClientServlet extends HttpServlet {
 //            User user = userDAO.findUserByUsername(login);
 //            System.out.println("USER:  "+ user);
 //            RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-//            Request request = requestDAO.getRequestByUserId(user.getId());
-//            System.out.println("REQUEST:  "+request);
-//            req.setAttribute("cur_request_id", request.getId());
+//            Request request_actions = requestDAO.getRequestByUserId(user.getId());
+//            System.out.println("REQUEST:  "+request_actions);
+//            req.setAttribute("cur_request_id", request_actions.getId());
 //        }
 
 
@@ -76,16 +76,14 @@ public class ClientServlet extends HttpServlet {
 
         String loginSession = (String)req.getSession().getAttribute("LOGGED_USER");
         if(loginSession != null){
-//            String login = (String)req.getSession().getAttribute("LOGGED_USER");
             UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
             RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-//            System.out.println("LOGIN: " + login);
             User user = userDAO.findUserByUsername(loginSession);
             System.out.println("USER:  "+ user);
             Request request = requestDAO.getRequestByUserId(user.getId());
             System.out.println("REQUEST:  "+request);
 
-//!!!!!!!!!!!            req.setAttribute("cur_request_id", request.getId());
+//!!!!!!!!!!!            req.setAttribute("cur_request_id", request_actions.getId());
 
 
 
@@ -95,11 +93,10 @@ public class ClientServlet extends HttpServlet {
 
 //            List<Request> requests = requestDAO.findAll();
 //            System.out.println("?????" + requests);
-            UserDAO userDAO1 = new UserDAO(ConnectionManager.getConnection());
-            User user1 = userDAO1.findUserByUsername(loginSession);
+//            UserDAO userDAO1 = new UserDAO(ConnectionManager.getConnection());
+            User user1 = userDAO.findUserByUsername(loginSession);
 
             List<Request> requests = this.getLimitedRequestsByUserID(currentPage, recordsPerPage, user1.getId());
-//            nOfPages = RequestRowCounter.getNumberOfPagesByStatus(recordsPerPage,firstStatus, secondStatus);
             nOfPages = RequestRowCounter.getNumberOfPagesByUserId(recordsPerPage, user1.getId());
 
 
@@ -140,9 +137,9 @@ public class ClientServlet extends HttpServlet {
 //???????!!!!!        List<Integer> feedbackIsWritten = new ArrayList<>();
 //        RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
 //
-//        for(Request request: requests)
-//            if(requestDAO.isRequestHasFeedback(request.getId()))
-//                feedbackIsWritten.add(request.getId());
+//        for(Request request_actions: requests)
+//            if(requestDAO.isRequestHasFeedback(request_actions.getId()))
+//                feedbackIsWritten.add(request_actions.getId());
 //
 //
 //

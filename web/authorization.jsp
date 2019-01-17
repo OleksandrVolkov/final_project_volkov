@@ -199,10 +199,18 @@
 
 
 <div id="id01" class="modal">
-    <a href="/lang">
-        <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
-    </a>
-    <form class="modal-content" action="/authorization">
+    <%--<a href="/lang">--%>
+        <%--<span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>--%>
+    <%--</a>--%>
+
+    <form action="/lang">
+        <input type="hidden" name="lang" value="${language.lang}">
+        <input type="hidden" name="pageUrl" value="main.jsp">
+        <input type="submit" value="&times;">
+    </form>
+
+    <%--<form class="modal-content" id="model_content_id" actions="/authorization">--%>
+        <form class="modal-content" id="model_content_id" action="/account">
         <div class="container">
             <h1><c:out value="${language['authorizationName']}"/></h1>
             <p><c:out value="${language['enterData']}"/></p>
@@ -213,11 +221,11 @@
             <br>
             <label for="pas"><b><c:out value="${language['password']}"/></b></label>
             <input type="password" placeholder="<c:out value="${language['password']}"/>" name="pas" required>
-            <br>
 
-            <label>
-                <input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня
-            </label>
+            <%--<br>--%>
+            <%--<label>--%>
+                <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
+            <%--</label>--%>
             <br>
             <div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp"><c:out value="${language['isRegistered']}"/></a></div>
             <br>
@@ -226,12 +234,30 @@
             <div class="wrongAuthorization"><a><c:out value="${language['wrongData']}"/></a></div>
 
             <div class="clearfix">
-                <a class="cancelLink" href="/lang"><button type="button" class="cancelbtn"><c:out value="${language['cancelRequest']}"/></button></a>
+                <%--<form id="cancelButton" actions="/lang">--%>
+
+                    <%--<a onclick="document.getElementById('model_content_id').submit(); return false;" class="cancelLink"><button type="button" class="cancelbtn"><c:out value="${language['cancelRequest']}"/></button></a>--%>
+                    <a class="cancelLink" href="/lang"><button type="button" class="cancelbtn"><c:out value="${language['cancelRequest']}"/></button></a>
+
+                    <%--<input type="hidden" name="lang" value="${language['lang']}">--%>
+                    <%--<input type="hidden" name="pageUrl" value="main.jsp">--%>
+                <%--</form>--%>
+
                 <button type="submit" class="signupbtn"><c:out value="${language['sendRequest']}"/></button>
             </div>
 
+            <input type="hidden" name="lang" value="${language['lang']}">
+            <input type="hidden" name="pageUrl" value="main.jsp">
+            <input type="hidden" name="action" value="login">
+
+
         </div>
     </form>
+        <%--<form id="cancelButton" actions="/lang">--%>
+            <%--<a onclick="document.getElementById('cancelButton').submit(); return false;" class="cancelLink" href="/lang"><button type="button" class="cancelbtn"><c:out value="${language['cancelRequest']}"/></button></a>--%>
+            <%--<input type="hidden" name="lang" value="${language['lang']}">--%>
+            <%--<input type="hidden" name="pageUrl" value="main.jsp">--%>
+        <%--</form>--%>
 </div>
 
 

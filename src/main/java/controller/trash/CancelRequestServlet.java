@@ -1,4 +1,4 @@
-package controller;
+package controller.trash;
 
 import model.dao.RequestDAO;
 import model.dao.connection.ConnectionManager;
@@ -21,18 +21,18 @@ public class CancelRequestServlet extends HttpServlet{
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String reason = req.getParameter("reason");
-        Integer requestId = Integer.parseInt(req.getParameter("cur_request_id"));
-        System.out.println(reason);
-
-        RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-        Request request = requestDAO.findEntityById(requestId);
-        request.setStatus("rejected");
-        request.setReject(new Reject(reason, requestId));
-
-        requestDAO.update(request, request.getId());
-
-        req.getRequestDispatcher("/managerserv").forward(req, resp);
+//        String reason = req.getParameter("reason");
+//        Integer requestId = Integer.parseInt(req.getParameter("cur_request_id"));
+//        System.out.println(reason);
+//
+//        RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
+//        Request request_actions = requestDAO.findEntityById(requestId);
+//        request_actions.setStatus("rejected");
+//        request_actions.setReject(new Reject(reason, requestId));
+//
+//        requestDAO.update(request_actions, request_actions.getId());
+//
+//        req.getRequestDispatcher("/managerserv").forward(req, resp);
     }
 }
 

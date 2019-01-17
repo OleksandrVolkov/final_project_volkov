@@ -394,8 +394,10 @@
         <a href="#contact"><c:out value="${language['header.contactsItem']}"/></a>
         <%--<a href="authorization.jsp"><c:out value="${language['header.authorizationItem']}"/></a>--%>
         <a>
-            <form action="/authorization" method="get">
+            <%--<form actions="authorization.jsp" method="get">--%>
+            <form action="/lang" method="get">
                 <input type="hidden" name="lang" value="${language['lang']}">
+                <input type="hidden" name="pageUrl" value="authorization.jsp">
                 <input class="auth" type="submit" value="<c:out value="${language['header.authorizationItem']}"/>">
             </form>
         </a>
@@ -430,12 +432,14 @@
     <%--<a class="sendRequestButton" onclick="document.getElementById('id01').style.display='block'">Отправить заявку</a>--%>
 
     <%--<a class="sendRequestButton" href="/preRequest"><c:out value="${language['sendRequest']}"/></a>--%>
-   <form method="get" action="/preRequest">
-    <input type="hidden" name="lang" value="<c:out value="${language['lang']}"/>">
-    <input  class="sendRequestButton" type="submit" value="<c:out value="${language['sendRequest']}"/>">
+   <%--<form method="get" action="/preRequest">--%>
+    <form method="get" action="/request">
+        <input type="hidden" name="lang" value="<c:out value="${language['lang']}"/>">
+        <input  class="sendRequestButton" type="submit" value="<c:out value="${language['sendRequest']}"/>">
+        <input type="hidden" name="action" value="set">
    </form>
 </div>
-<%--<form method="get" action="/personalCab">--%>
+<%--<form method="get" actions="/personalCab">--%>
     <%--<input type="submit" name="persCab" value="Personal Cabinet">--%>
 <%--</form>--%>
 <form method="get" action="/client">
@@ -521,7 +525,7 @@
 
 <%--<div id="id01" class="modal">--%>
 <%--<span onclick="document.getElementById('id01').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-<%--<form class="modal-content" action="/request">--%>
+<%--<form class="modal-content" actions="/request_actions">--%>
 <%--<div class="container">--%>
 <%--<h1>Оставить заявку</h1>--%>
 <%--<p>Пожалуйста, введите необходимые данные для оформления заявкм</p>--%>
@@ -562,7 +566,7 @@
 
 <%--<div id="id02" class="modal">--%>
 <%--<span onclick="document.getElementById('id02').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-<%--<form class="modal-content" action="/authorization">--%>
+<%--<form class="modal-content" actions="/authorization">--%>
 <%--<div class="container">--%>
 <%--<h1>Авторизация</h1>--%>
 <%--<p>Пожалуйста, введите необходимые данные для авторизации</p>--%>
@@ -597,7 +601,7 @@
 
 <%--<div id="id03" class="modal mod3">--%>
 <%--<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>--%>
-<%--<form class="modal-content" action="/registration">--%>
+<%--<form class="modal-content" actions="/registration">--%>
 <%--<div class="container">--%>
 <%--<h1>Регистрация</h1>--%>
 <%--<p>Пожалуйста, введите необходимые данные для регистрации</p>--%>

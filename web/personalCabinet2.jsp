@@ -25,16 +25,17 @@
                 <td>${cur_request.text}</td>
                 <td>${cur_request.status}</td>
                 <td>
-                    <c:forEach items="${cur_request.getItems()}" var="cur_item">
-                        ${cur_item.getName()}
-                        <br>
-                        ${cur_item.getInfo()}
-                        <br>
-                    </c:forEach>
+                    <%--<c:forEach items="${cur_request.getItems()}" var="cur_item">--%>
+                        <%--${cur_item.getName()}--%>
+                        <%--<br>--%>
+                        <%--${cur_item.getInfo()}--%>
+                        <%--<br>--%>
+                    <%--</c:forEach>--%>
+                            ${cur_request.itemId}
                 </td>
                     <%--${cur_request.userId}--%>
                 <%--<td>--%>
-                    <%--<form method="get" action="feedback.jsp">--%>
+                    <%--<form method="get" actions="feedback.jsp">--%>
                         <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
                         <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
                         <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
@@ -43,7 +44,7 @@
 
 
                     <%--<c:if test="${!feedbackIsWritten.contains(cur_request.id)}">--%>
-                        <%--<form method="get" action="feedback.jsp">--%>
+                        <%--<form method="get" actions="feedback.jsp">--%>
                             <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
                             <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
                             <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
@@ -62,7 +63,7 @@
                 </td>
                 <%--<td>--%>
                     <%--<c:if test="${cur_request.status eq 'waited'}">--%>
-                        <%--<form method="get" action="feedback.jsp">--%>
+                        <%--<form method="get" actions="feedback.jsp">--%>
                             <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
                             <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
                             <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
@@ -127,9 +128,10 @@
 </nav>
 
 
-<form action="/exit">
-    <input type="hidden" name="user_id" value="${cur_request.userId}">
-    <input type="submit" name="exit_account" value="Exit an account">
+<form action="/account" method="get">
+    <input type="submit" name="exit_account" value="Logout">
+    <input type="hidden" name="role" value="client">
+    <input type="hidden" name="action" value="logout">
 </form>
 
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>

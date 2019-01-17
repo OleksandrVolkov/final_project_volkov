@@ -10,6 +10,7 @@
       <%--<a href="/list?price=500">Click</a> to get cheap orders list.<br/>--%>
   <%--</body>--%>
 <form method="get" action="/lang">
+    <input type="hidden" name="pageUrl" value="main.jsp">
     <input type="submit" value="CLICK">
 </form>
 </html>

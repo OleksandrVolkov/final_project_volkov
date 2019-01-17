@@ -12,6 +12,23 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ *
+ *  RequestDAO represents a way to access database to the corresponding to the
+ *  Request entity table "requests" via JDBC API by SQL server.
+ *  It represents the way to access to the value needed and make basic CRUD (create,
+ *  read, update, delete) operations and some more added functionality.
+ *  Moreover, it gives the opportunity to initialize the entity
+ *  objects (Request class) on the side of model which makes it easier to manipulate with the objects
+ *  in the application in the object-oriented way.
+ *  It extends an abstract AbstractDAO class and therefore overrides some its methods.
+ *
+ *
+ * @author  Oleksandr Volkov
+ * @version 1.0
+ * @since   2019-01-15
+ */
+
 public class RequestDAO extends AbstractDAO<Request>{
 //    private UserDAO userDAO;
     private FeedbackDAO feedbackDAO;
@@ -22,21 +39,26 @@ public class RequestDAO extends AbstractDAO<Request>{
         super(connection);
     }
 
-    @Override
-    public List<Request> findAll() {
+    /**
+     * This method is used to find all requests from the corresponding table in the
+     * database.
+     * @return List of all of the requests available in the table.
+     */
+     @Override
+     public List<Request> findAll() {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
         log.trace("Finding all feedbacks");
 //        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         String query = "SELECT * FROM requests;";
         List<Request> requests = new ArrayList<>();
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
             log.trace("Creating result set");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
             int i = 0;
 
             while (resultSet.next()){
@@ -44,24 +66,28 @@ public class RequestDAO extends AbstractDAO<Request>{
                 int id = resultSet.getInt("id");
                 String text = resultSet.getString("request_text");
                 int user_id = resultSet.getInt("user_id");
+                int itemId = resultSet.getInt("item_id");
+
                 String status = resultSet.getString("status");
-                log.trace("Creating request with id = " + id);
-//                request = new Request(id, text, status);
-                log.trace("Setting price for the request");
-//!!!                request.setPrice(this.getPriceByRequestId(id));
+                log.trace("Creating request_actions with id = " + id);
+//                request_actions = new Request(id, text, status);
+                log.trace("Setting price for the request_actions");
+//!!!                request_actions.setPrice(this.getPriceByRequestId(id));
                 log.trace("Setting feedback (throughout access to feedbackDAO)");
-//!!!                request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
-                log.trace("Adding a request to an array");
+//!!!                request_actions.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
+                log.trace("Adding a request_actions to an array");
+
+                Request request = new Request(id, text, status, user_id, itemId);
+//                request_actions.setItem(new ItemDAO(ConnectionManager.getConnection()).findEntityById(itemId));
 
 
-
-                requests.add(new Request(id, text, status, user_id));
+                requests.add(request);
             }
 
             for(Request curRequest: requests){
                 curRequest.setPrice(this.getPriceByRequestId(curRequest.getId()));
                 curRequest.setFeedback(feedbackDAO.getFeedbackByRequestId(curRequest.getId()));
-                curRequest.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(curRequest));
+//                curRequest.setItem(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(curRequest));
                 curRequest.setReject(new RejectDAO(ConnectionManager.getConnection()).getRejectByRequestId(curRequest.getId()));
             }
 
@@ -69,7 +95,7 @@ public class RequestDAO extends AbstractDAO<Request>{
             log.warn("Error a bit:(", e);
             return null;
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
 
@@ -79,182 +105,227 @@ public class RequestDAO extends AbstractDAO<Request>{
         return requests;
     }
 
-//    public List<Request> findByStatus(String status) throws SQLException {
-//        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-//        List<Request> requests = new ArrayList<>();
-//
-//        String query = "SELECT * FROM requests WHERE status = ?;";
-//
-//
-//            preparedStatement = connection.prepareStatement(query);
-//            preparedStatement.setString(1, status);
-////            statement = connection.createStatement();
-////            resultSet = statement.executeQuery(query);
-//            resultSet = preparedStatement.executeQuery();
-//            while (resultSet.next()){
-//                int id = resultSet.getInt("id");
-//                String text = resultSet.getString("request_text");
-////                int feedback_id = resultSet.getInt("feedback_id");
-//// !!!!               Feedback feedback = feedbackDAO.findEntityById(feedback_id);
-//
-//
-//                requests.add(new Request(id, text, status));
-//            }
-//
-//            return requests;
-//    }
-
-    @Override
-    public Request findEntityById(int id) {
+    /**
+     * This method is used to find request_actions by its id in the database.
+     * @param id This is the id of the request_actions is needed to find.
+     * @return Request It returns the request_actions by the given id.
+     */
+     @Override
+     public Request findEntityById(int id) {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        log.info("Finding request by id = " + id);
-// !!!!!       feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
+        log.info("Finding request_actions by id = " + id);
         Request request = null;
-        String query = "SELECT * FROM requests WHERE id = " + id + ";";
+        String query = "SELECT * FROM requests WHERE id = ?;";
 
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
             log.trace("Creating result set");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 log.trace("Getting values of the result set");
                 String text = resultSet.getString("request_text");
                 String status = resultSet.getString("status");
-                int user_id = resultSet.getInt("user_id");
-
-//                FeedbackDAO feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-                log.trace("Creating request with id = " + id);
-                request = new Request(id, text, status, user_id);
-                log.trace("Getting price for request");
+                int userId = resultSet.getInt("user_id");
+                int itemId = resultSet.getInt("item_id");
+                log.trace("Creating request_actions with id = " + id);
+                request = new Request(id, text, status, userId, itemId);
+                log.trace("Getting price for request_actions");
                 request.setPrice(this.getPriceByRequestId(id));
-                log.trace("Setting feedback (throughout access to feedbackDAO) by request id = " + id);
+                log.trace("Setting feedback (throughout access to feedbackDAO) by request_actions id = " + id);
                 request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
-                //!!!!!!!!!!!!!
-                request.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request));
                 request.setReject(new RejectDAO(ConnectionManager.getConnection()).getRejectByRequestId(id));
-
-
-//                request.setReject(new RejectDAO(ConnectionManager.getConnection()).findEntityById());
             }
-            log.trace("Returning request");
+            log.trace("Returning request_actions");
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
             return null;
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
         return request;
     }
 
-    @Override
-    public boolean delete(int id) {
+
+    /**
+     * This method is used to delete request_actions by its id.
+     * @param id This is id of the request_actions is needed to delete.
+     * @return boolean It returns the boolean value depending on whether request_actions was deleted.
+     * (by given id)
+     */
+     @Override
+     public boolean delete(int id) {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        log.info("Deleting request with id = " + id);
-
-        String query = "DELETE FROM requests WHERE id = " + id + ";";
-        Statement statement = null;
+        log.info("Deleting request_actions with id = " + id);
+        this.deletePrice(id);
+        String query = "DELETE FROM requests WHERE id = ?;";
+        PreparedStatement preparedStatement = null;
         try {
-            this.deleteItemsByRequestId(id);
+            connection.setAutoCommit(false);
+//            this.deleteItemsByRequestId(id);
 //            statement = connection.createStatement();
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, id);
             log.trace("Executing update ");
-            statement.executeUpdate(query);
+            preparedStatement.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             return false;
         } finally {
-            close(statement);
+            close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }
 
 
-    private boolean deleteItemsByRequestId(int requestId){
+    /**
+     * This method is used to delete the corresponding to the given confirmed request_actions price
+     * @param requestId This is id of the request_actions is needed to delete.
+     * @return boolean It returns the boolean value depending on whether request_actions was deleted.
+     * (by given id)
+     */
+    private boolean deletePrice(int requestId) {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        log.info("Deleting items by request with request id = " + requestId);
+        log.info("Deleting request_actions with request_actions id = " + requestId);
 
-
-
-        String query = "DELETE FROM requests_items WHERE request_id = " + requestId + ";";
-        Statement statement = null;
+        String query = "DELETE FROM confirmed_requests WHERE request_id = ?;";
+        PreparedStatement preparedStatement = null;
         try {
-//            statement = connection.createStatement();
-            log.trace("Creating statement");
-            statement = connection.createStatement();
+            connection.setAutoCommit(false);
+//            this.deleteItemsByRequestId(id);
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, requestId);
             log.trace("Executing update ");
-            statement.executeUpdate(query);
+            preparedStatement.executeUpdate();
+            connection.commit();
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             return false;
         } finally {
-            close(statement);
+            close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return true;
     }
 
 
+    /**
+     * This method is used to create request_actions by given object of the corresponding class.
+     * @param request This is the request_actions which values will be inserted into the table "requests".
+     * @return boolean It returns the boolean value depending on whether request_actions was successfully created.
+     */
     @Override
     public boolean create(Request request) {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        log.info("Creating request with status = " + request.getStatus());
-        String query = "INSERT INTO requests(request_text, status, user_id) VALUES(?,?,?);";
+        log.info("Creating request_actions with status = " + request.getStatus());
+        String query = "INSERT INTO requests(request_text, status, user_id, item_id) VALUES(?,?,?,?);";
 //        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
 
         PreparedStatement preparedStatement = null;
         try{
+            connection.setAutoCommit(false);
             log.trace("Creating prepared statement");
             preparedStatement = connection.prepareStatement(query);
             log.trace("Setting values for prepared statement");
 
             String text = request.getText();
             String status = request.getStatus();
-            int userId = request.getUserId();
-            System.out.println("!!!!!!!!!" + text + status + userId);
+            Integer userId = request.getUserId();
+            Integer itemId = request.getItemId();
+
+
             preparedStatement.setString(1, text);
             preparedStatement.setString(2, status);
             preparedStatement.setInt(3, userId);
+            preparedStatement.setInt(4, itemId);
+
+            System.out.println("USER ID = " + userId);
+            System.out.println("ITEM ID = " + itemId);
 
             log.trace("Executing prepared statement");
             preparedStatement.execute();
 
-            log.trace("Setting id of the request");
-//            request.setId(getRequestIndex(request));
+
+            log.trace("Setting id of the request_actions");
+//            request_actions.setId(getRequestIndex(request_actions));
             request.setId(this.getLastInsertedRequestIndex());
 
-//            this.createRequestsWithItems(request);
-            if(!request.getItems().isEmpty()) {
-                log.trace("Creating requests with items");
-                new RequestDAO(ConnectionManager.getConnection()).createRequestsWithItems(request);
-            }
+            System.out.println("REQUEST ID = " + request.getId());
+            connection.commit();
+
         }catch(SQLException e){
             log.warn("Error a bit:(", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
             return false;
         } finally {
             close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         log.trace("Request is created");
         return true;
     }
 
+
+
+    /**
+     * This method is used to get index of the last inserted requests.
+     * It is mainly used while creating request_actions so that get its index for
+     * future handling in the application.
+     * @return Integer It returns the index of the last inserted request_actions.
+     */
     public Integer getLastInsertedRequestIndex(){
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-//        String query = "SELECT * FROM requests WHERE request_text = '" + request.getText() + "' AND status = '" + request.getStatus() + "';";
+//        String query = "SELECT * FROM requests WHERE request_text = '" + request_actions.getText() + "' AND status = '" + request_actions.getStatus() + "';";
         String query = "SELECT MAX( id ) AS max_id FROM requests;";
         int id = 0;
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
-            statement = connection.prepareStatement(query);
-            resultSet = statement.executeQuery(query);
+            preparedStatement = connection.prepareStatement(query);
+            resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
                 id = resultSet.getInt("max_id");
             }
@@ -262,33 +333,38 @@ public class RequestDAO extends AbstractDAO<Request>{
             e.printStackTrace();
             return null;
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
         return id;
     }
 
-//    public boolean isFeedbackEmpty(Request request){
-//        return request.getFeedback() == null;
-//    }
 
+
+    /**
+     * This method is used to update request value in the database by its key.
+     * @param request This is the request_actions which values will be inserted into the table "requests"
+     * @param key This is the id which is used to update the corresponding value
+     * @return Request It returns given request
+     */
     @Override
     public Request update(Request request, int key) {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
         log.info("Updating request with id = " + key);
-//        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-//        rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        String query = "UPDATE requests SET request_text = ?, status = ?, user_id = ? WHERE id = "+key+";";
+        String query = "UPDATE requests SET request_text = ?, status = ?, user_id = ?, item_id = ? WHERE id = ?;";
 
         PreparedStatement preparedStatement = null;
         try {
+//            connection.setAutoCommit(false);
             log.trace("Creating prepared statement");
             preparedStatement = connection.prepareStatement(query);
             log.trace("Setting values of the prepared statement");
             preparedStatement.setString(1, request.getText());
             preparedStatement.setString(2, request.getStatus());
             preparedStatement.setInt(3, request.getUserId());
+            preparedStatement.setInt(4, request.getItemId());
+            preparedStatement.setInt(5, key);
             log.trace("Executing update");
             preparedStatement.executeUpdate();
             log.trace("Checking whether feedback is empty");
@@ -301,63 +377,46 @@ public class RequestDAO extends AbstractDAO<Request>{
             }
             log.trace("Checking whether price is empty");
             if(request.getPrice() != null) {
-                log.trace("Adding price to the request");
+                log.trace("Adding price to the request_actions");
                 this.addPriceToRequest(request);
             }
             log.trace("Checking whether reject is empty");
             if(request.getReject() != null) {
-                log.trace("Creating rejection of the request");
-                System.out.println("________________________");
-                System.out.println("________________________");
-                System.out.println("________________________");
-                System.out.println("________________________");
-                System.out.println("________________________");
-                System.out.println("________________________");
-                System.out.println("________________________");
-
                 System.out.println(request.getReject());
                 rejectDAO.create(request.getReject());
-
-                System.out.println(this.findEntityById(request.getId()).getReject() + ")))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))");
-                log.trace("Rejection of the request is created");
+                log.trace("Rejection of the request_actions is created");
             }
 
-            log.trace("Returning request");
+            log.trace("Returning request_actions");
+//            connection.commit();
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
+//            try {
+//                connection.rollback();
+//                log.warn("Successfully rolled back changes from the database");
+//            } catch (SQLException e1) {
+//                e1.printStackTrace();
+//                log.warn("Could not rollback updates " + e1.getMessage());
+//            }
             return null;
         } finally {
             close(preparedStatement);
+//            try {
+//                connection.setAutoCommit(true);
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
         }
         return request;
     }
 
 
-//    public List<Request> getRequestsByStatus(String status){
-//        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-//        String query = "SELECT * FROM requests WHERE status = " + status;
-//        List<Request> requests = new ArrayList<>();
-//
-//        try {
-//            statement = connection.createStatement();
-//            resultSet = statement.executeQuery(query);
-//            while (resultSet.next()){
-//                int id = resultSet.getInt("id");
-//                String text = resultSet.getString("request_text");
-//
-////                int feedback_id = resultSet.getInt("feedback_id");
-////!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-//                requests.add(new Request(id, text, status, null));
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-//
-//        return requests;
-//    }
-
-
+    /**
+     * This method is used to find all requests with the limited range (which is needed).
+     * @param currentPage This is the page which is at the time at hte paginagion handling
+     * @param recordsPerPage This is the id which is used to update the corresponding value
+     * @return List of requests It returns the limited range of requests
+     */
     public List<Request> findLimitRequests(int currentPage, int recordsPerPage) {
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
@@ -386,17 +445,18 @@ public class RequestDAO extends AbstractDAO<Request>{
                     String text = resultSet.getString("request_text");
                     String status = resultSet.getString("status");
                     int userId = resultSet.getInt("user_id");
-                    Request request = new Request(id, text, status, userId);
-                    ItemDAO itemDAO = new ItemDAO(ConnectionManager.getConnection());
+                    int itemId = resultSet.getInt("item_id");
+                    Request request = new Request(id, text, status, userId, itemId);
                     FeedbackDAO feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-                    log.trace("Setting feedback of the request");
+                    log.trace("Setting feedback of the request_actions");
                     request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
-                    log.trace("Setting items of the request");
-                    request.setItems(itemDAO.getItemsByRequest(request));
+                    log.trace("Setting items of the request_actions");
+//                    request_actions.setItems(itemDAO.getItemsByRequest(request_actions));
+//                    request_actions.setItem(new ItemDAO(ConnectionManager.getConnection()).findEntityById(itemId));
                     log.trace("Setting price of the price");
                     request.setPrice(getPriceByRequestId(id));
 
-                    log.trace("Adding request to the array");
+                    log.trace("Adding request_actions to the array");
                     requests.add(request);
                 }
                 log.trace("Returning requests");
@@ -409,6 +469,15 @@ public class RequestDAO extends AbstractDAO<Request>{
             return requests;
     }
 
+
+    /**
+     * This method is used to find requests with the limited range (which is needed) by 2 statuses.
+     * @param currentPage This is the page which is at the time at hte paginagion handling
+     * @param recordsPerPage This is the id which is used to update the corresponding value
+     * @param firstStatus This is the first searched status
+     * @param secondStatus This is the second searched status
+     * @return List of requests It returns the limited range of requests by 2 statuses
+     */
     public List<Request> findLimitRequests(int currentPage, int recordsPerPage, String firstStatus, String secondStatus){
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
@@ -441,14 +510,16 @@ public class RequestDAO extends AbstractDAO<Request>{
                 String text = resultSet.getString("request_text");
                 String status = resultSet.getString("status");
                 int userId = resultSet.getInt("user_id");
-                Request request = new Request(id, text, status, userId);
+                int itemId = resultSet.getInt("item_id");
+                Request request = new Request(id, text, status, userId, itemId);
                 log.trace("Request is created with id = " + id);
-                log.trace("Setting items of the request");
-                request.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request));
+                log.trace("Setting items of the request_actions");
+//                request_actions.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request_actions));
+//                request_actions.setItem(new ItemDAO(ConnectionManager.getConnection()).findEntityById(itemId));
                 FeedbackDAO feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-                log.trace("Setting feedback by request id = " + id);
+                log.trace("Setting feedback by request_actions id = " + id);
                 request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
-                log.trace("Setting price by request id = " + id);
+                log.trace("Setting price by request_actions id = " + id);
                 request.setPrice(getPriceByRequestId(id));
                 request.setReject(rejectDAO.getRejectByRequestId(id));
                 requests.add(request);
@@ -466,6 +537,14 @@ public class RequestDAO extends AbstractDAO<Request>{
 
 
 
+
+    /**
+     * This method is used to find requests with the limited range (which is needed) by status.
+     * @param currentPage This is the page which is at the time at hte paginagion handling
+     * @param recordsPerPage This is the id which is used to update the corresponding value
+     * @param status This is the searched status
+     * @return List of requests It returns the limited range of requests by status
+     */
     public List<Request> findLimitRequests(int currentPage, int recordsPerPage, String status){
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
@@ -473,7 +552,7 @@ public class RequestDAO extends AbstractDAO<Request>{
         List<Request> requests = new ArrayList<>();
 
         log.trace("Current page: " + currentPage + ", records per page: " + recordsPerPage);
-        log.trace("Status: " + status);
+        log.trace("RequestStatus: " + status);
 //        int start = currentPage * recordsPerPage - recordsPerPage;
         int start = this.getStartIndex(currentPage, recordsPerPage);
         String sql = "SELECT * FROM requests WHERE status IN (?) LIMIT ?, ?";
@@ -496,14 +575,16 @@ public class RequestDAO extends AbstractDAO<Request>{
                 int id = resultSet.getInt("id");
                 String text = resultSet.getString("request_text");
                 int userId = resultSet.getInt("user_id");
-                Request request = new Request(id, text, status, userId);
+                int itemId = resultSet.getInt("item_id");
+                Request request = new Request(id, text, status, userId, itemId);
                 log.trace("Request is created with id = " + id);
-                log.trace("Setting items of the request");
-                request.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request));
+                log.trace("Setting items of the request_actions");
+//                request_actions.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request_actions));
+//                request_actions.setItem(new ItemDAO(ConnectionManager.getConnection()).findEntityById(itemId));
                 FeedbackDAO feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-                log.trace("Setting feedback by request id = " + id);
+                log.trace("Setting feedback by request_actions id = " + id);
                 request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
-                log.trace("Setting price by request id = " + id);
+                log.trace("Setting price by request_actions id = " + id);
                 request.setPrice(getPriceByRequestId(id));
                 request.setReject(rejectDAO.getRejectByRequestId(id));
                 requests.add(request);
@@ -521,6 +602,14 @@ public class RequestDAO extends AbstractDAO<Request>{
 
 
 
+
+    /**
+     * This method is used to find requests with the limited range (which is needed) by user id
+     * @param currentPage This is the page which is at the time at hte paginagion handling
+     * @param recordsPerPage This is the id which is used to update the corresponding value
+     * @param userId This is the user id for whom requests are being searched
+     * @return List of requests It returns the limited range of requests by user id
+     */
     public List<Request> findLimitRequests(int currentPage, int recordsPerPage, int userId){
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
@@ -552,34 +641,18 @@ public class RequestDAO extends AbstractDAO<Request>{
                 String text = resultSet.getString("request_text");
 //                int userId = resultSet.getInt("user_id");
                 String status = resultSet.getString("status");
-                Request request = new Request(id, text, status, userId);
+                int itemId = resultSet.getInt("item_id");
+                Request request = new Request(id, text, status, userId, itemId);
                 log.trace("Request is created with id = " + id);
-                log.trace("Setting items of the request");
-                request.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request));
+                log.trace("Setting items of the request_actions");
+//                request_actions.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request_actions));
+//                request_actions.setItem(new ItemDAO(ConnectionManager.getConnection()).findEntityById(itemId));
                 FeedbackDAO feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-                log.trace("Setting feedback by request id = " + id);
+                log.trace("Setting feedback by request_actions id = " + id);
                 request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
-                log.trace("Setting price by request id = " + id);
+                log.trace("Setting price by request_actions id = " + id);
                 request.setPrice(getPriceByRequestId(id));
                 request.setReject(rejectDAO.getRejectByRequestId(id));
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("________________________________________________________");
-                System.out.println("REJECT IN LIMIT                                "+request.getReject());
                 requests.add(request);
                 log.trace("Request is added to the array");
             }
@@ -595,16 +668,26 @@ public class RequestDAO extends AbstractDAO<Request>{
 
 
 
-
+    /**
+     * This method is used to get start index of the limited range of requests
+     * @param currentPage This is the page which is at the time at the paginagion handling
+     * @param recordsPerPage This is the id which is used to update the corresponding value
+     * @return int Start index of the limited range of requests
+     */
     public int getStartIndex(int currentPage, int recordsPerPage){
         return currentPage * recordsPerPage - recordsPerPage;
     }
 
+
+    /**
+     * This method is used to get price value in the database by its request_actions id.
+     * @param id This is the request_actions id which is used to get the searched price
+     * @return Double It returns the price which is found by the requestId.
+     */
     public Double getPriceByRequestId(int id){
-        log.trace("Getting price by request id = " + id);
+        log.trace("Getting price by request_actions id = " + id);
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-//        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         String query = "SELECT * FROM confirmed_requests WHERE request_id = ?;";
         Double price = null;
         PreparedStatement preparedStatement = null;
@@ -628,54 +711,67 @@ public class RequestDAO extends AbstractDAO<Request>{
             close(resultSet);
         }
 
-        log.trace("Returning price of the request with id " + id);
+        log.trace("Returning price of the request_actions with id " + id);
         return price;
     }
 
-    public Request getRequestByUserId(int user_id){
+
+    /**
+     * This method is used to get request_actions value in the database by its user id.
+     * @param userId This is the user id which is used to get the searched request_actions
+     * @return Request It returns the request_actions which is found by the userId.
+     */
+    public Request getRequestByUserId(int userId){
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        log.info("Finding request by user id = " + user_id);
+        log.info("Finding request_actions by user id = " + userId);
         Request request = null;
-        String query = "SELECT * FROM requests WHERE user_id = " + user_id + ";";
+        String query = "SELECT * FROM requests WHERE user_id = ?;";
 
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
             log.trace("Creating result set");
-            resultSet = statement.executeQuery(query);
+            preparedStatement.setInt(1, userId);
+            resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 log.trace("Getting values of the result set");
                 String text = resultSet.getString("request_text");
                 String status = resultSet.getString("status");
+                int itemId = resultSet.getInt("item_id");
                 int id = resultSet.getInt("id");
-                log.trace("Creating request with id = " + id);
-                request = new Request(id, text, status, user_id);
-                log.trace("Getting price for request");
+                log.trace("Creating request_actions with id = " + id);
+                request = new Request(id, text, status, userId, itemId);
+//                request_actions.setItem(new ItemDAO(ConnectionManager.getConnection()).findEntityById(itemId));
+
+                log.trace("Getting price for request_actions");
                 request.setPrice(this.getPriceByRequestId(id));
-                log.trace("Setting feedback (throughout access to feedbackDAO) by request id = " + id);
+                log.trace("Setting feedback (throughout access to feedbackDAO) by request_actions id = " + id);
                 request.setFeedback(feedbackDAO.getFeedbackByRequestId(id));
 
                 //!!!!!!!!!!!!!
-                request.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request));
+//                request_actions.setItems(new ItemDAO(ConnectionManager.getConnection()).getItemsByRequest(request_actions));
+
             }
-            log.trace("Returning request");
+            log.trace("Returning request_actions");
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
             return null;
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
         return request;
     }
 
 
-
-
-
+    /**
+     * This method is used to get amount of the requests by the given status available
+     * @param status This is the status by which is got amount of requests available
+     * @return int It returns the amount of the requests by the given status available
+     */
     public int getAmountOfRequestsByStatus(String status) {
         log.trace("Getting amount of requests by status = " + status);
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
@@ -706,19 +802,23 @@ public class RequestDAO extends AbstractDAO<Request>{
     }
 
 
+    /**
+     * This method is used to get amount of requests in the database.
+     * @return int It returns the amount of requests
+     */
     public int getAmountOfRequests() {
         log.trace("Getting amount of requests");
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
         String query = "SELECT COUNT(id) AS total FROM requests;";
 
-        Statement statement = null;
+        PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         try {
             log.trace("Creating statement");
-            statement = connection.createStatement();
+            preparedStatement = connection.prepareStatement(query);
             log.trace("Creating result set");
-            resultSet = statement.executeQuery(query);
+            resultSet = preparedStatement.executeQuery();
             int total = 0;
             while (resultSet.next()){
                 log.trace("Getting values from the result set");
@@ -729,14 +829,17 @@ public class RequestDAO extends AbstractDAO<Request>{
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
         } finally {
-            close(statement);
+            close(preparedStatement);
             close(resultSet);
         }
         return 0;
     }
 
 
-
+    /**
+     * This method is used to get amount of requests in the database by given user id.
+     * @return int It returns the amount of requests by given user id
+     */
     public int getAmountOfRequestsByUserId(int userId) {
         log.trace("Getting amount of requests");
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
@@ -767,6 +870,10 @@ public class RequestDAO extends AbstractDAO<Request>{
         return 0;
     }
 
+    /**
+     * This method is used to get amount of requests in the database by given 2 statuses.
+     * @return int It returns the amount of requests by given 2 statuses
+     */
     public int getAmountOfRequestsByTwoStatuses(String firstStatus, String secondStatus) {
         log.info("Getting amount of requests by 2 statuses, 1 = " + firstStatus + ", 2 = " + secondStatus);
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
@@ -797,48 +904,24 @@ public class RequestDAO extends AbstractDAO<Request>{
         return total;
     }
 
-    public boolean createRequestsWithItems(Request request) {
-//        List<Item> items = request.getItems();
-        log.info("Creating requests with items");
-        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
-        rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-        String query = "INSERT INTO requests_items(request_id, item_id) VALUES(?,?);";
-//        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
 
-        PreparedStatement preparedStatement = null;
-        try {
-            for(int i = 0; i < request.getItems().size(); i++) {
-                    log.trace("Creating prepared statement");
-                    preparedStatement = connection.prepareStatement(query);
-                    log.trace("Setting values for prepared statement");
-                    preparedStatement.setInt(1, request.getId());
-                    preparedStatement.setInt(2, request.getItems().get(i).getId());
-                    log.trace("Executing prepared statement");
-                    preparedStatement.execute();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally{
-            close(preparedStatement);
-        }
-        return true;
-    }
-
+    /**
+     * This method is used to add price to request_actions
+     * @return boolean It returns the boolean value whether price was successfully added to the request_actions
+     */
     public boolean addPriceToRequest(Request request){
-//        if(!request.getStatus().equals("not seen"))
-//            return false;
         feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
         rejectDAO = new RejectDAO(ConnectionManager.getConnection());
 
         double price = request.getPrice();
-        log.info("Adding price = " + price + " to request with request id = " + request.getId());
+        log.info("Adding price = " + price + " to request_actions with request_actions id = " + request.getId());
 
         String query = "INSERT INTO confirmed_requests(request_id, price) VALUES(?,?);";
-//        feedbackDAO = new FeedbackDAO(ConnectionManager.getConnection());
 
         PreparedStatement preparedStatement = null;
         try {
-            log.trace("Adding price to request");
+            connection.setAutoCommit(false);
+            log.trace("Adding price to request_actions");
             preparedStatement = connection.prepareStatement(query);
 
             log.trace("Setting values for prepared statement");
@@ -848,18 +931,26 @@ public class RequestDAO extends AbstractDAO<Request>{
             log.trace("Executing prepared statement");
             preparedStatement.execute();
             log.trace("Price is added");
+            connection.commit();
         } catch (SQLException e) {
             log.warn("Error a bit:(", e);
+            try {
+                connection.rollback();
+                log.warn("Successfully rolled back changes from the database");
+            } catch (SQLException e1) {
+                e1.printStackTrace();
+                log.warn("Could not rollback updates " + e1.getMessage());
+            }
         } finally {
             close(preparedStatement);
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
         return true;
     }
-
-
-
-
 }
 
 
@@ -917,10 +1008,10 @@ public class RequestDAO extends AbstractDAO<Request>{
 //        int rejectId = rejectDAO.getRejectIndexByRequestId(requestId);
 //        reject.setId(rejectId);
 //    }
-//    public void addReject(Request request){
+//    public void addReject(Request request_actions){
 //        rejectDAO = new RejectDAO(ConnectionManager.getConnection());
-//        request.getReject().setRequestId(request.getId());
-//        rejectDAO.create(request.getReject());
+//        request_actions.getReject().setRequestId(request_actions.getId());
+//        rejectDAO.create(request_actions.getReject());
 //    }
 
 

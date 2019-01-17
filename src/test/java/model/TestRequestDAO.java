@@ -1,11 +1,14 @@
 package model;
 
 import model.dao.FeedbackDAO;
+import model.dao.ItemDAO;
 import model.dao.RequestDAO;
+import model.dao.UserDAO;
 import model.dao.connection.ConnectionManager;
 import model.entity.Feedback;
 import model.entity.Item;
 import model.entity.Request;
+import model.entity.User;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +26,8 @@ import static org.junit.Assert.assertNull;
 @RunWith(Parameterized.class)
 public class TestRequestDAO {
     private RequestDAO requestDAO;
+    private ItemDAO itemDAO;
+    private UserDAO userDAO;
 
     @Parameterized.Parameter
     public Request request;
@@ -38,14 +43,23 @@ public class TestRequestDAO {
     public String firstStatus;
     @Parameterized.Parameter(6)
     public String secondStatus;
+    @Parameterized.Parameter(7)
+    public Item item;
+    @Parameterized.Parameter(8)
+    public User user;
+
+
 
 
 
     @Parameterized.Parameters
     public static Collection data(){
         return Arrays.asList( new Object[][]{
-                        {new Request("sddpasd", "not seen", 2), 23.2, 1, 5, "rejected", "is being seen", "rejected"}
-//                {new Request("sadpoja", "not seen"),19.2}
+                        {
+                            new Request("sddpasd", "not seen"), 23.2, 1, 5, "rejected", "is being seen", "rejected",
+                            new Item("apsdjoadsj1", "dspahsadodsa12jo"),
+                            new User("Olick","Omlet","adtl21dwnex10","pas","ddasm21310@gmail.com","client")
+                        }
                 }
         );
     }
@@ -54,21 +68,36 @@ public class TestRequestDAO {
     @Before
     public void init(){
         requestDAO = new RequestDAO(ConnectionManager.getConnection());
+        itemDAO = new ItemDAO(ConnectionManager.getConnection());
+        userDAO = new UserDAO(ConnectionManager.getConnection());
     }
 
     @Test
     public void testCreate(){
+        userDAO.create(user);
+        itemDAO.create(item);
+        request.setUserId(user.getId());
+        request.setItemId(item.getId());
         requestDAO.create(request);
         Request curRequest = requestDAO.findEntityById(request.getId());
         assertEquals(request.getText(), curRequest.getText());
         assertEquals(request.getStatus(), curRequest.getStatus());
+
         requestDAO.delete(request.getId());
+        userDAO.delete(user.getId());
+        itemDAO.delete(item.getId());
+//        requestDAO.delete(request_actions.getId());
     }
 
     @Test
     public void testUpdate(){
         String status = "rejected";
         String curText = "a";
+        userDAO.create(user);
+        itemDAO.create(item);
+        request.setUserId(user.getId());
+        request.setItemId(item.getId());
+
         requestDAO.create(request);
         request.setText(curText);
         request.setStatus(status);
@@ -76,35 +105,61 @@ public class TestRequestDAO {
         Request requestTemp = requestDAO.findEntityById(request.getId());
         assertEquals(requestTemp.getStatus(), status);
         assertEquals(requestTemp.getText(), curText);
+
         requestDAO.delete(request.getId());
+        userDAO.delete(user.getId());
+        itemDAO.delete(item.getId());
     }
 
     @Test
     public void testDelete(){
+        userDAO.create(user);
+        itemDAO.create(item);
+        request.setUserId(user.getId());
+        request.setItemId(item.getId());
+
         requestDAO.create(request);
         requestDAO.delete(request.getId());
+
         assertNull(requestDAO.findEntityById(request.getId()));
+
+        userDAO.delete(user.getId());
+        itemDAO.delete(item.getId());
     }
 
     @Test
     public void testFindEntityById(){
+        userDAO.create(user);
+        itemDAO.create(item);
+        request.setUserId(user.getId());
+        System.out.println("USER ID = " + user.getId());
+        request.setItemId(item.getId());
+
         requestDAO.create(request);
         Request tempRequest = requestDAO.findEntityById(request.getId());
-        assertEquals(request.getStatus(), tempRequest.getStatus());
-        assertEquals(request.getText(), tempRequest.getText());
-        assertEquals(request.getId(), tempRequest.getId());
+        assertEquals(request, tempRequest);
 
         requestDAO.delete(request.getId());
+        userDAO.delete(user.getId());
+        itemDAO.delete(item.getId());
     }
 
     @Test
     public void testAddPriceToRequest(){
+        userDAO.create(user);
+        itemDAO.create(item);
+        request.setUserId(user.getId());
+        request.setItemId(item.getId());
+
         requestDAO.create(request);
         request.setPrice(price);
         requestDAO.addPriceToRequest(request);
         Double tempPrice = requestDAO.getPriceByRequestId(request.getId());
         assertEquals(request.getPrice(), tempPrice);
+
         requestDAO.delete(request.getId());
+        userDAO.delete(user.getId());
+        itemDAO.delete(item.getId());
     }
 
     @Test
@@ -170,25 +225,19 @@ public class TestRequestDAO {
 
     @Test
     public void testGetPriceByRequestId(){
+        userDAO.create(user);
+        itemDAO.create(item);
+        request.setUserId(user.getId());
+        request.setItemId(item.getId());
+        request.setPrice(price);
         requestDAO.create(request);
-        request.setPrice(123.1);
+
         requestDAO.addPriceToRequest(request);
         double price = requestDAO.getPriceByRequestId(request.getId());
-        assertEquals(price, 123.1, 0.0001);
+        assertEquals(this.price, price, 0.0001);
         requestDAO.delete(request.getId());
-    }
-
-    @Test
-    public void testCreateRequestsWithItems(){
-        requestDAO.create(request);
-        List<Item> items = new ArrayList<>();
-        items.add(new Item("IOHASDO","PASDJOADS"));
-        request.setItems(items);
-        boolean flag = false;
-
-        flag = requestDAO.createRequestsWithItems(request);
-
-        assertEquals(true, flag);
+        itemDAO.delete(item.getId());
+        userDAO.delete(user.getId());
     }
 
     @Test
@@ -227,11 +276,34 @@ public class TestRequestDAO {
 
     @Test
     public void testGetLastInsertedRequestIndex(){
+        itemDAO.create(item);
+        userDAO.create(user);
+        request.setItemId(item.getId());
+        request.setUserId(user.getId());
         requestDAO.create(request);
+
         Integer requestId = requestDAO.getLastInsertedRequestIndex();
         Request tempRequest = requestDAO.findEntityById(request.getId());
 
         assertEquals(request.getId(), requestId, tempRequest.getId());
         requestDAO.delete(request.getId());
+        itemDAO.delete(item.getId());
+        userDAO.delete(user.getId());
     }
 }
+
+
+
+
+//    @Test
+//    public void testCreateRequestsWithItems(){
+//        requestDAO.create(request_actions);
+//        List<Item> items = new ArrayList<>();
+//        items.add(new Item("IOHASDO","PASDJOADS"));
+//        request_actions.setItems(items);
+//        boolean flag = false;
+//
+//        flag = requestDAO.createRequestsWithItems(request_actions);
+//
+//        assertEquals(true, flag);
+//    }

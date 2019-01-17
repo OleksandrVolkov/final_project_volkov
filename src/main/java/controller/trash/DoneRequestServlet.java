@@ -1,4 +1,4 @@
-package controller;
+package controller.trash;
 
 import model.dao.RequestDAO;
 import model.dao.connection.ConnectionManager;
@@ -20,8 +20,8 @@ public class DoneRequestServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        changeStatus(req, "done");
-        req.getRequestDispatcher("/master").forward(req, resp);
+//        changeStatus(req, "done");
+//        req.getRequestDispatcher("/master").forward(req, resp);
     }
 
     public void changeStatus(HttpServletRequest req, String status){

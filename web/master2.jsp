@@ -21,17 +21,19 @@
                 <td>${cur_request.text}</td>
                 <td>${cur_request.status}</td>
                 <td>
-                    <c:forEach items="${cur_request.getItems()}" var="cur_item">
-                        ${cur_item.getName()}
-                        <br>
-                        ${cur_item.getInfo()}
-                    </c:forEach>
+                    <%--<c:forEach items="${cur_request.getItems()}" var="cur_item">--%>
+                        <%--${cur_item.getName()}--%>
+                        <%--<br>--%>
+                        <%--${cur_item.getInfo()}--%>
+                    <%--</c:forEach>--%>
+                            ${cur_request.itemId}
                 </td>
                 <td>
-                    <form method="get" action="/doneReq">
+                    <form method="get" action="/request">
                         <input type="hidden" name="currentPage" value="${currentPage}">
                         <input type="hidden" name="recordsPerPage" value="${recordsPerPage}">
                         <button type="submit" class="cancel" name="cancelButton" value="${cur_request.id}">Выполнено</button>
+                        <input type="hidden" name="action" value="done">
                     </form>
                 </td>
             </tr>
@@ -73,6 +75,13 @@
 <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+
+<form action="/account" method="get">
+    <%--<input type="hidden" name="user_id" value="${cur_request.userId}">--%>
+    <input type="submit" name="exit_account" value="Exit an account">
+    <c:set var = "role" scope = "session" value = "master"/>
+    <input type="hidden" name="action" value="logout">
+</form>
 
 </body>
 </html>

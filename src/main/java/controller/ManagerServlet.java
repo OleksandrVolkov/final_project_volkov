@@ -22,8 +22,19 @@ public class ManagerServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int currentPage = Integer.valueOf(req.getParameter("currentPage"));
-        int recordsPerPage = Integer.valueOf(req.getParameter("recordsPerPage"));
+        String currentPageStr = req.getParameter("currentPage");
+        String recordsPerPageStr = req.getParameter("recordsPerPage");
+
+        int currentPage = 0;
+        int recordsPerPage = 0;
+        if(currentPageStr == null || currentPageStr.equals(""))
+            currentPage = 1;
+        else
+            currentPage = Integer.parseInt(currentPageStr);
+        if(recordsPerPageStr == null || recordsPerPageStr.equals(""))
+            recordsPerPage = 5;
+        else
+            recordsPerPage = Integer.parseInt(recordsPerPageStr);
 //        int recordsPerPage = 5;
         int nOfPages = 0;
         List<Request> requests = null;
@@ -103,7 +114,7 @@ public class ManagerServlet extends HttpServlet {
 ////        requests.add(new Request("See this please", "not seen"));
 ////        requests.add(new Request("That's a good idea", "not seen"));
 ////        requests.add(new Request("We haven't seen that", "not seen"));
-////        requests.add(new Request("This is a request", "not seen"));
+////        requests.add(new Request("This is a request_actions", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("See this please", "not seen"));
@@ -111,7 +122,7 @@ public class ManagerServlet extends HttpServlet {
 ////        requests.add(new Request("See this please", "not seen"));
 ////        requests.add(new Request("That's a good idea", "not seen"));
 ////        requests.add(new Request("We haven't seen that", "not seen"));
-////        requests.add(new Request("This is a request", "not seen"));
+////        requests.add(new Request("This is a request_actions", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("See this please", "not seen"));
@@ -138,7 +149,7 @@ public class ManagerServlet extends HttpServlet {
 ////        requests.add(new Request("See this please", "not seen"));
 ////        requests.add(new Request("That's a good idea", "not seen"));
 ////        requests.add(new Request("We haven't seen that", "not seen"));
-////        requests.add(new Request("This is a request", "not seen"));
+////        requests.add(new Request("This is a request_actions", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
@@ -147,7 +158,7 @@ public class ManagerServlet extends HttpServlet {
 ////        requests.add(new Request("See this please", "not seen"));
 ////        requests.add(new Request("That's a good idea", "not seen"));
 ////        requests.add(new Request("We haven't seen that", "not seen"));
-////        requests.add(new Request("This is a request", "not seen"));
+////        requests.add(new Request("This is a request_actions", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("This is it!", "not seen"));
 ////        requests.add(new Request("See this please", "not seen"));
@@ -160,9 +171,9 @@ public class ManagerServlet extends HttpServlet {
 
 //!!!!!!        List<Integer> requestWithPricesIDs = new ArrayList<>();
 //        RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-//        for(Request request: requests)
-//            if(!requestDAO.isRequestHasPrice(request.getId()) && request.getStatus().equals("not seen"))
-//                requestWithPricesIDs.add(request.getId());
+//        for(Request request_actions: requests)
+//            if(!requestDAO.isRequestHasPrice(request_actions.getId()) && request_actions.getStatus().equals("not seen"))
+//                requestWithPricesIDs.add(request_actions.getId());
 
 
 

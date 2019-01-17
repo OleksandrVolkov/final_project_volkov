@@ -23,8 +23,20 @@ public class MasterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int currentPage = Integer.valueOf(req.getParameter("currentPage"));
-        int recordsPerPage = Integer.valueOf(req.getParameter("recordsPerPage"));
+        String currentPageStr = req.getParameter("currentPage");
+        String recordsPerPageStr = req.getParameter("recordsPerPage");
+
+        int currentPage = 0;
+        int recordsPerPage = 0;
+        if(currentPageStr == null || currentPageStr.equals(""))
+            currentPage = 1;
+        else
+            currentPage = Integer.parseInt(currentPageStr);
+        if(recordsPerPageStr == null || recordsPerPageStr.equals(""))
+            recordsPerPage = 5;
+        else
+            recordsPerPage = Integer.parseInt(recordsPerPageStr);
+
 
         List<Request> requests = null;
         int nOfPages = 0;
@@ -93,7 +105,7 @@ public class MasterServlet extends HttpServlet {
 //        requests.add(new Request("See this please", "not seen"));
 //        requests.add(new Request("That's a good idea", "not seen"));
 //        requests.add(new Request("We haven't seen that", "not seen"));
-//        requests.add(new Request("This is a request", "not seen"));
+//        requests.add(new Request("This is a request_actions", "not seen"));
 //        requests.add(new Request("This is it!", "not seen"));
 //        requests.add(new Request("This is it!", "not seen"));
 //        requests.add(new Request("See this please", "not seen"));
@@ -101,7 +113,7 @@ public class MasterServlet extends HttpServlet {
 //        requests.add(new Request("See this please", "not seen"));
 //        requests.add(new Request("That's a good idea", "not seen"));
 //        requests.add(new Request("We haven't seen that", "not seen"));
-//        requests.add(new Request("This is a request", "not seen"));
+//        requests.add(new Request("This is a request_actions", "not seen"));
 //        requests.add(new Request("This is it!", "not seen"));
 //        requests.add(new Request("This is it!", "not seen"));
 //        requests.add(new Request("See this please", "not seen"));
