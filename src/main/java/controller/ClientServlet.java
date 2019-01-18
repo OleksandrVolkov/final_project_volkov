@@ -1,8 +1,10 @@
 package controller;
 
+import model.dao.ItemDAO;
 import model.dao.RequestDAO;
 import model.dao.UserDAO;
 import model.dao.connection.ConnectionManager;
+import model.entity.Item;
 import model.entity.Request;
 import model.entity.User;
 import model.utility.RequestRowCounter;
@@ -15,7 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "client", urlPatterns = {"/client"})
 public class ClientServlet extends HttpServlet {
@@ -33,85 +37,35 @@ public class ClientServlet extends HttpServlet {
             currentPage = Integer.parseInt(req.getParameter("currentPage"));
 
         int recordsPerPage = 5;
-
-//        List<Request> requests = null;
         int nOfPages = 0;
-//        String firstStatus = "done";
-//        String secondStatus = "rejected";
-
-//        try {
-////            requests = this.getLimitedRequestsByStatus(currentPage, recordsPerPage, firstStatus, secondStatus);
-//////            nOfPages = RequestRowCounter.getNumberOfPagesByStatus(recordsPerPage,firstStatus, secondStatus);
-////            nOfPages = RequestRowCounter.getNumberOfPagesByUserId(recordsPerPage, )
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-
-//        req.setAttribute("requests", requests);
-//        req.setAttribute("noOfPages", nOfPages);
-//        req.setAttribute("currentPage", currentPage);
-//        req.setAttribute("recordsPerPage", recordsPerPage);
-
-//        if(req.getSession().getAttribute("LOGGED_USER") != null){
-//            String login = (String)req.getSession().getAttribute("LOGGED_USER");
-//            UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
-//            System.out.println("LOGIN: " + login);
-//            User user = userDAO.findUserByUsername(login);
-//            System.out.println("USER:  "+ user);
-//            RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-//            Request request_actions = requestDAO.getRequestByUserId(user.getId());
-//            System.out.println("REQUEST:  "+request_actions);
-//            req.setAttribute("cur_request_id", request_actions.getId());
-//        }
-
-
-//        req.getRequestDispatcher("personalCabinet2.jsp").forward(req, resp);
-//        req.getRequestDispatcher("/personalCab").forward(req, resp);
-
-
-
-
 
 
 
         String loginSession = (String)req.getSession().getAttribute("LOGGED_USER");
         if(loginSession != null){
             UserDAO userDAO = new UserDAO(ConnectionManager.getConnection());
-            RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-            User user = userDAO.findUserByUsername(loginSession);
-            System.out.println("USER:  "+ user);
-            Request request = requestDAO.getRequestByUserId(user.getId());
-            System.out.println("REQUEST:  "+request);
 
 //!!!!!!!!!!!            req.setAttribute("cur_request_id", request_actions.getId());
-
-
-
             System.out.println("SESSION FOUND " + loginSession);
-//                if(req.getParameter("currentPage") == null)
+            User user = userDAO.findUserByUsername(loginSession);
 
+            List<Request> requests = this.getLimitedRequestsByUserID(currentPage, recordsPerPage, user.getId());
+            nOfPages = RequestRowCounter.getNumberOfPagesByUserId(recordsPerPage, user.getId());
 
-//            List<Request> requests = requestDAO.findAll();
-//            System.out.println("?????" + requests);
-//            UserDAO userDAO1 = new UserDAO(ConnectionManager.getConnection());
-            User user1 = userDAO.findUserByUsername(loginSession);
+            Map<Integer, Item> items = new HashMap<>();
+            ItemDAO itemDAO = new ItemDAO(ConnectionManager.getConnection());
+            for(Request curRequest: requests)
+                items.put(curRequest.getId(), itemDAO.findEntityById(curRequest.getItemId()));
 
-            List<Request> requests = this.getLimitedRequestsByUserID(currentPage, recordsPerPage, user1.getId());
-            nOfPages = RequestRowCounter.getNumberOfPagesByUserId(recordsPerPage, user1.getId());
-
-
-
-
+            req.setAttribute("items", items);
             req.setAttribute("requests", requests);
             req.setAttribute("currentPage", currentPage);
             req.setAttribute("recordsPerPage", recordsPerPage);
             req.setAttribute("noOfPages", nOfPages);
             req.setAttribute("currentPage", currentPage);
-//            req.setAttribute("recordsPerPage", recordsPerPage);
 
             req.getRequestDispatcher("personalCabinet2.jsp").forward(req, resp);
 //                resp.sendRedirect("/lang");
-//            req.getRequestDispatcher("/personalCab").forward(req, resp);
         } else {
             resp.sendRedirect("/lang");
         }
@@ -125,39 +79,3 @@ public class ClientServlet extends HttpServlet {
         return new RequestDAO(ConnectionManager.getConnection()).findLimitRequests(currentPage, recordsPerPage, userId);
     }
 }
-
-
-
-
-
-
-
-
-
-//???????!!!!!        List<Integer> feedbackIsWritten = new ArrayList<>();
-//        RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
-//
-//        for(Request request_actions: requests)
-//            if(requestDAO.isRequestHasFeedback(request_actions.getId()))
-//                feedbackIsWritten.add(request_actions.getId());
-//
-//
-//
-//        req.setAttribute("feedbackIsWritten", feedbackIsWritten);
-
-
-
-//    public List<Request> findRequests(int currentPage, int recordsPerPage, String status) throws SQLException {
-//        return new RequestDAO(ConnectionManager.getConnection()).findLimitRequests(currentPage, recordsPerPage, status);
-//    }
-//    public List<Request> findRequestsOfTwoStatuses(int currentPage, int recordsPerPage, String firstStatus, String secondStatus) throws SQLException {
-//        return new RequestDAO(ConnectionManager.getConnection()).findLimitRequests(currentPage, recordsPerPage, firstStatus, secondStatus);
-//    }
-
-//    public int getNumberOfRows() throws SQLException {
-//        return new RequestDAO(ConnectionManager.getConnection()).getAmountOfRequests();
-//    }
-//
-//    public int getNumberOfRows(String firstStatus, String secondStatus) throws SQLException {
-//        return new RequestDAO(ConnectionManager.getConnection()).getAmountOfRequestsByTwoStatuses(firstStatus, secondStatus);
-//    }

@@ -165,7 +165,6 @@ public class UserDAO extends AbstractDAO<User>{
 
         PreparedStatement preparedStatement = null;
         try{
-            connection.setAutoCommit(true);
             logger.trace("Creating prepared statement");
             preparedStatement = connection.prepareStatement(query);
             logger.trace("Setting values for the prepared statement");
@@ -188,18 +187,10 @@ public class UserDAO extends AbstractDAO<User>{
 //            user.setId(getUserIndexByEmail(user.getEmail()));
             user.setId(this.getLastInsertedUserId());
             logger.trace("User is created");
-            connection.commit();
             return true;
 
         } catch(SQLException e){
             logger.warn("Error a bit:(", e);
-            try {
-                connection.rollback();
-                logger.warn("Successfully rolled back changes from the database");
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                logger.warn("Could not rollback updates " + e1.getMessage());
-            }
             return false;
         } finally{
             close(preparedStatement);

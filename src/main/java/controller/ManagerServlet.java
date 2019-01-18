@@ -1,5 +1,8 @@
 package controller;
 
+import model.dao.ItemDAO;
+import model.dao.connection.ConnectionManager;
+import model.entity.Item;
 import model.entity.Request;
 import model.utility.RequestRowCounter;
 
@@ -10,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "managerserv",urlPatterns = {"/managerserv"})
 public class ManagerServlet extends HttpServlet {
@@ -35,16 +40,20 @@ public class ManagerServlet extends HttpServlet {
             recordsPerPage = 5;
         else
             recordsPerPage = Integer.parseInt(recordsPerPageStr);
-//        int recordsPerPage = 5;
+
         int nOfPages = 0;
         List<Request> requests = null;
-        try {
-            requests = RequestRowCounter.findRequests(currentPage, recordsPerPage);
-            nOfPages = RequestRowCounter.getNumberOfPages(recordsPerPage);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
+        requests = RequestRowCounter.findRequests(currentPage, recordsPerPage);
+        nOfPages = RequestRowCounter.getNumberOfPages(recordsPerPage);
+
+        Map<Integer, Item> items = new HashMap<>();
+        ItemDAO itemDAO = new ItemDAO(ConnectionManager.getConnection());
+        for(Request curRequest: requests)
+            items.put(curRequest.getId(), itemDAO.findEntityById(curRequest.getItemId()));
+
+
+        req.setAttribute("items", items);
         req.setAttribute("requests", requests);
         req.setAttribute("noOfPages", nOfPages);
         req.setAttribute("currentPage", currentPage);

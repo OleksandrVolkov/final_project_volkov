@@ -51,7 +51,8 @@ public class RequestRowCounter {
         return nOfPages;
     }
 
-    public static List<Request> findRequests(int currentPage, int recordsPerPage) throws SQLException {
+    public static List<Request> findRequests(int currentPage, int recordsPerPage){
         return new RequestDAO(ConnectionManager.getConnection()).findLimitRequests(currentPage, recordsPerPage);
     }
+
 }

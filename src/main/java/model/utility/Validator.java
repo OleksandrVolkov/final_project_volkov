@@ -37,4 +37,10 @@ public class Validator implements Regex{
             return true;
         return false;
     }
+
+    public boolean isValidPrice(String price){
+        if(price.matches(PRICE_REGEX))
+            return true;
+        return false;
+    }
 }

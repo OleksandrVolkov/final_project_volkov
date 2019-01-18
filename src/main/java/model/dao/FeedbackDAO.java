@@ -139,7 +139,6 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
         String query = "DELETE FROM feedbacks WHERE id = ?;";
         PreparedStatement preparedStatement = null;
         try {
-            connection.setAutoCommit(false);
             log.trace("Creating statement");
             preparedStatement = connection.prepareStatement(query);
             preparedStatement.setInt(1, id);
@@ -149,21 +148,9 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
             return true;
         } catch (SQLException e) {
             log.warn("Can't execute the query", e);
-            try {
-                connection.rollback();
-                log.warn("Successfully rolled back changes from the database");
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                log.warn("Could not rollback updates " + e1.getMessage());
-            }
             return false;
         } finally {
             close(preparedStatement);
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -181,7 +168,6 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
         PreparedStatement preparedStatement = null;
         String query = "INSERT INTO feedbacks(feedback_text, feedback_date, request_id) VALUES(?,?,?);";
         try{
-            connection.setAutoCommit(false);
             log.trace("Creating prepared statement ");
             preparedStatement = connection.prepareStatement(query);
             String text = feedback.getText();
@@ -194,26 +180,12 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
             log.trace("Executing prepared statement");
             preparedStatement.execute();
             feedback.setId(this.getLastInsertedFeedbackIndex());
-            connection.commit();
         } catch(SQLException e){
             log.warn("Can't execute the query", e);
-            try {
-                connection.rollback();
-                log.warn("Successfully rolled back changes from the database");
-//                connection.setAutoCommit(true);
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                log.warn("Could not rollback updates " + e1.getMessage());
-            }
             log.trace("Returning false");
             return false;
         } finally {
             close(preparedStatement);
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
         log.trace("Setting id to the returned feedback object");
         log.trace("Returning true value");
@@ -234,7 +206,6 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
         ResultSet resultSet = null;
         PreparedStatement preparedStatement = null;
         try {
-            connection.setAutoCommit(false);
             log.trace("Creating statement");
             preparedStatement = connection.prepareStatement(query);
             log.trace("Creating result set");
@@ -245,26 +216,13 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
             }
 
             log.trace("Returning id");
-            connection.commit();
             return id;
         } catch (SQLException e) {
             log.warn("Can't execute the query", e);
-            try {
-                connection.rollback();
-                log.warn("Successfully rolled back changes from the database");
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                log.warn("Could not rollback updates " + e1.getMessage());
-            }
             return null;
         } finally {
             close(preparedStatement);
             close(resultSet);
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -282,7 +240,6 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
 
         PreparedStatement preparedStatement = null;
         try {
-            connection.setAutoCommit(false);
             log.trace("Creating prepared statement");
             preparedStatement = connection.prepareStatement(query);
 
@@ -294,27 +251,12 @@ public class FeedbackDAO extends AbstractDAO<Feedback>{
             log.trace("Executing update");
             preparedStatement.executeUpdate();
             log.trace("Returning feedback with id = " + key);
-            connection.commit();
-
             return feedback;
         } catch (SQLException e) {
             log.warn("Can't execute the query", e);
-            try {
-                connection.rollback();
-                log.warn("Successfully rolled back changes from the database");
-                connection.setAutoCommit(true);
-            } catch (SQLException e1) {
-                e1.printStackTrace();
-                log.warn("Could not rollback updates " + e1.getMessage());
-            }
             return null;
         } finally {
             close(preparedStatement);
-            try {
-                connection.setAutoCommit(true);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 

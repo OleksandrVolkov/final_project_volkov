@@ -24,6 +24,7 @@ public class RequestServlet extends HttpServlet{
         actionMap.put("reject", new RejectAction());
         actionMap.put("set", new SetItemsAction());
         actionMap.put("send", new SendAction());
+        actionMap.put("feedback", new LeaveFeedbackAction());
     }
 
     @Override

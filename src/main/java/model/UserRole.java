@@ -19,13 +19,12 @@ public enum UserRole {
     public String getValue(){
         return value;
     }
+
     public UserRole getUserRole(String value){
        List<UserRole> userRoles = Arrays.asList(UserRole.values());
-       for(UserRole userRole: userRoles){
-           if(userRole.value.equals(value)){
+       for(UserRole userRole: userRoles)
+           if(userRole.value.equals(value))
                return userRole;
-           }
-       }
        return null;
     }
 }

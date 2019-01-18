@@ -227,7 +227,7 @@
                 <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
             <%--</label>--%>
             <br>
-            <div class="registrationLinkDiv"> <a class="registrationLink" href="reg.jsp"><c:out value="${language['isRegistered']}"/></a></div>
+            <div class="registrationLinkDiv"> <a class="registrationLink" href="/account?action=register"><c:out value="${language['isRegistered']}"/></a></div>
             <br>
             <br>
             <br>

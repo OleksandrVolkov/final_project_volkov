@@ -1,6 +1,7 @@
 package controller.actions.request_actions;
 
 import controller.actions.Action;
+import model.RequestStatus;
 import model.dao.RequestDAO;
 import model.dao.connection.ConnectionManager;
 import model.entity.Reject;
@@ -17,7 +18,7 @@ public class RejectAction implements Action {
 
         RequestDAO requestDAO = new RequestDAO(ConnectionManager.getConnection());
         Request request = requestDAO.findEntityById(requestId);
-        request.setStatus("rejected");
+        request.setStatus(RequestStatus.REJECTED.toString());
         request.setReject(new Reject(reason, requestId));
 
         requestDAO.update(request, request.getId());

@@ -1,7 +1,9 @@
 package controller;
 
+import model.dao.ItemDAO;
 import model.dao.RequestDAO;
 import model.dao.connection.ConnectionManager;
+import model.entity.Item;
 import model.entity.Request;
 import model.utility.RequestRowCounter;
 
@@ -12,7 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @WebServlet(name = "master", urlPatterns ={"/master"})
 public class MasterServlet extends HttpServlet {
@@ -48,6 +52,13 @@ public class MasterServlet extends HttpServlet {
             e.printStackTrace();
         }
 
+        Map<Integer, Item> items = new HashMap<>();
+        ItemDAO itemDAO = new ItemDAO(ConnectionManager.getConnection());
+        for(Request curRequest: requests)
+            items.put(curRequest.getId(), itemDAO.findEntityById(curRequest.getItemId()));
+
+
+        req.setAttribute("items", items);
         req.setAttribute("requests", requests);
         req.setAttribute("noOfPages", nOfPages);
         req.setAttribute("currentPage", currentPage);

@@ -44,9 +44,10 @@ public class AccountServlet extends HttpServlet{
             e.printStackTrace();
         }
         System.out.println("URL :" + url);
-        if(url == null)
+        if(url == null || url.equals(""))
             url = "/lang";
 
         req.getRequestDispatcher(url).forward(req, resp);
+
     }
 }

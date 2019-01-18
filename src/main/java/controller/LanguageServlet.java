@@ -22,8 +22,9 @@ public class LanguageServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println(req.getParameter("lang"));
         System.out.println(req.getParameter("pageUrl"));
-        String pageUrl = req.getParameter("pageUrl");
         System.out.println(req.getParameter("lang") + "???????");
+
+        String pageUrl = req.getParameter("pageUrl");
         String lang = req.getParameter("lang");
 
         if(pageUrl == null || pageUrl.equals(""))
@@ -35,7 +36,6 @@ public class LanguageServlet extends HttpServlet {
 
         System.out.println("LANG " + lang);
 
-//        if (username == null || password == null) {
 
 
         Map<String, String> authForm = LanguageHandler.getHashMapOfValuesByPageUrl(pageUrl, Language.getLanguage(lang));

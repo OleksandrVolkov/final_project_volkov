@@ -5,6 +5,7 @@
   Time: 21:23
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -54,7 +55,7 @@
         /* Float cancel and signup buttons and add an equal width */
         .cancelbtn, .signupbtn {
             float: left;
-            width: 50%;
+            width: 100%;
         }
 
         /* Add padding to container elements */
@@ -225,15 +226,21 @@
 
             <input id="curPage" type="hidden" name="currentPage" value="${currentPage}">
             <input id="recPerPage" type="hidden" name="recordsPerPage" value="${recordsPerPage}">
-            <input id="curReqId" type="hidden" name="cur_request_id" value="${request_id}">
+            <input id="curReqId" type="hidden" name="cur_request_id" value="${request_id}">${request_id}
             <input type="hidden" name="action" value="accept">
+
 
             <br>
 
             <div class="clearfix">
-                <button type="button" class="cancelbtn">Отменить</button>
+                <a><button type="button" class="cancelbtn">Отменить</button></a>
                 <button type="submit" class="sendbtn">Отправить запрос к мастеру</button>
             </div>
+            <%--<div>--%>
+                <c:if test="${isValidPrice}">
+                    <span style="color: red;">Не правильно указана цена</span>
+                </c:if>
+            <%--</div>--%>
         </div>
     </form>
 </div>

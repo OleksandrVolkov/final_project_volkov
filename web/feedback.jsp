@@ -208,7 +208,8 @@
     <a href="main.jsp">
         <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
     </a>
-    <form method="get" class="modal-content" action="/feedback">
+    <form method="get" class="modal-content" action="/request">
+        <input type="hidden" name="action" value="feedback">
         <div class="container">
             <h1>Отзыв</h1>
             <p>Пожалуйста, введите необходимые данные для отзыва</p>

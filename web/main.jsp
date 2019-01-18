@@ -396,6 +396,7 @@
         <a>
             <%--<form actions="authorization.jsp" method="get">--%>
             <form action="/lang" method="get">
+                    <input type="hidden" name="action" value="login">
                 <input type="hidden" name="lang" value="${language['lang']}">
                 <input type="hidden" name="pageUrl" value="authorization.jsp">
                 <input class="auth" type="submit" value="<c:out value="${language['header.authorizationItem']}"/>">

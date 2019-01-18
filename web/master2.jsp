@@ -21,12 +21,7 @@
                 <td>${cur_request.text}</td>
                 <td>${cur_request.status}</td>
                 <td>
-                    <%--<c:forEach items="${cur_request.getItems()}" var="cur_item">--%>
-                        <%--${cur_item.getName()}--%>
-                        <%--<br>--%>
-                        <%--${cur_item.getInfo()}--%>
-                    <%--</c:forEach>--%>
-                            ${cur_request.itemId}
+                             ${items[cur_request.id].name}
                 </td>
                 <td>
                     <form method="get" action="/request">

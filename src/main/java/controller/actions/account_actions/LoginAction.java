@@ -7,43 +7,46 @@ import model.dao.connection.ConnectionManager;
 import model.entity.User;
 import model.utility.LanguageHandler;
 import model.utility.MD5Handler;
+import org.apache.log4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
 
 public class LoginAction implements Action{
+    private static Logger log = Logger.getLogger(LoginAction.class);
 
     @Override
     public String execute(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        log.trace("Getting login and password values");
         String username = req.getParameter("login");
         String password = req.getParameter("pas");
+        log.debug("Username: " + username);
 
-
-        System.out.println(req.getParameter("lang") + "???????");
+//        System.out.println(req.getParameter("lang") + "???????");
+        log.debug("Language short name" + req.getParameter("lang"));
         String lang = req.getParameter("lang");
-        System.out.println("PRE LANG");
         if(lang == null || lang.equals(""))
             lang = "en";
-        System.out.println("LANG " + lang);
+        log.debug("Language short name" + lang);
 
         String url = "";
-
+        log.trace("checking whether values equal to null");
         if (username == null || password == null) {
             Map<String, String> authForm = null;
             switch (lang) {
                 case "en":
-                    System.out.println("EEEEENNNNNN");
+                    log.trace("English is reached");
                     authForm = LanguageHandler.getHashMapOfAuthorizationForm(Language.ENGLISH);
                     authForm.put("lang", "en");
                     break;
                 case "ru":
-                    System.out.println("RRRRRUUUUU");
+                    log.trace("Russian is reached");
                     authForm = LanguageHandler.getHashMapOfAuthorizationForm(Language.RUSSIAN);
                     authForm.put("lang", "ru");
                     break;
                 case "ua":
-                    System.out.println("UUUUUAAAAAA");
+                    log.trace("Ukrainian is reached");
                     authForm = LanguageHandler.getHashMapOfAuthorizationForm(Language.UKRAINIAN);
                     authForm.put("lang", "ua");
                     break;

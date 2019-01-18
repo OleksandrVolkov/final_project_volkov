@@ -92,4 +92,42 @@ public class LanguageHandler {
         return null;
     }
 
+
+
+
+
+
+
+
+
+
+
+    public Map<String, String> getRelativeHashMap(String pageUrl, String lang){
+
+//        System.out.println(req.getParameter("lang"));
+//        System.out.println(req.getParameter("pageUrl"));
+//        System.out.println(req.getParameter("lang") + "???????");
+//
+//        String pageUrl = req.getParameter("pageUrl");
+//        String lang = req.getParameter("lang");
+
+        if(pageUrl == null || pageUrl.equals(""))
+            pageUrl = "main.jsp";
+
+        if(lang == null || lang.equals(""))
+            lang = "en";
+
+
+        System.out.println("LANG " + lang);
+
+
+
+        Map<String, String> authForm = LanguageHandler.getHashMapOfValuesByPageUrl(pageUrl, Language.getLanguage(lang));
+        authForm.put("lang", lang);
+
+        return authForm;
+//        System.out.println(authForm+"________");
+//        req.setAttribute("language", authForm);
+//        req.getRequestDispatcher(pageUrl).forward(req, resp);
+    }
 }

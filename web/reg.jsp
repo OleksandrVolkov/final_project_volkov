@@ -5,7 +5,9 @@
   Time: 20:37
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 <!DOCTYPE html>
 <html>
 <style>
@@ -168,7 +170,7 @@
         margin-top: -55px;
         position: absolute;
         color: red;
-        display: none;
+        /*display: none;*/
     }
 
     .wrongName{
@@ -213,32 +215,63 @@
         <a href="/lang">
             <span onclick="hide(); return false" class="close" title="Close Modal">&times;</span>
         </a>
-    <form class="modal-content" action="/registration">
-        <div class="container">
+    <%--<form class="modal-content" action="/registration">--%>
+
+
+
+        <form class="modal-content" action="/account">
+            <input type="hidden" name="action" value="register">
+           <div class="container">
             <h1>Регистрация</h1>
             <p>Пожалуйста, введите необходимые данные для регистрации</p>
             <hr>
+
             <label for="name"><b>Имя</b></label>
             <input type="text" placeholder="Имя" name="name" required>
-            <div class="wrong" id="wrongName">Имя указано неправильно</div>
+            <c:if test="${!isValidName}">
+                <div class="wrong" id="wrongName">Имя указано неправильно</div>
+            </c:if>
             <br>
+
             <label for="surname"><b>Фамилия</b></label>
             <input type="text" placeholder="Фамилия" name="surname" required>
-            <div class="wrong" id="wrongSurname">Фамилия указана неправильно</div>
+            <c:if test="${!isValidSurname}">
+                <div class="wrong" id="wrongSurname">Фамилия указана неправильно</div>
+            </c:if>
             <br>
+
             <label for="login"><b>Логин</b></label>
             <input type="text" placeholder="Логин" name="login" required>
-            <div class="wrong" id="wrongLogin">Логин указан неправильно</div>
-            <div class="wrong" id="busyLogin">Логин уже занят</div>
+            <c:if test="${!isValidLogin}">
+                 <div class="wrong" id="wrongLogin">Логин указан неправильно</div>
+            </c:if>
+            <c:if test="${!isBusyLogin}">
+                <div class="wrong" id="busyLogin">Логин уже занят</div>
+            </c:if>
             <br>
+
             <label for="pas"><b>Пароль</b></label>
             <input type="password" placeholder="Пароль" name="pas" required>
-            <div class="wrong" id="wrongPassword">Пароль указан неправильно</div>
+            <c:if test="${!isValidPassword}">
+                <div class="wrong" id="wrongPassword">Пароль указан неправильно</div>
+            </c:if>
             <br>
+
             <label for="email"><b>Email</b></label>
             <input type="text" placeholder="Email" name="email" required>
-            <div class="wrong" id="wrongEmail">Email указан неправильно</div>
-            <div class="wrong" id="busyEmail">Email уже занят</div>
+            <c:if test="${!isValidEmail}">
+                 <div class="wrong" id="wrongEmail">Email указан неправильно</div>
+            </c:if>
+            <c:if test="${!isBusyEmail}">
+                <div class="wrong" id="busyEmail">Email уже занят</div>
+            </c:if>
+
+
+
+
+
+
+
 
             <%--<label>--%>
             <%--<input type="checkbox" checked="checked" name="remember" style="margin-bottom:15px"> Запомнить меня--%>
@@ -258,34 +291,34 @@
 </div>
 
 <script>
-    var url = new URL(document.URL);
-    var isValidSurname = url.searchParams.get("isValidSurname");
-    var isValidaPas = url.searchParams.get("isValidPassword");
-    if(url.searchParams.get("isValidPassword") == 'false')
-        document.getElementById('wrongPassword').style.display = "block";
-    if(url.searchParams.get("isValidLogin") == 'false')
-        document.getElementById('wrongLogin').style.display = "block";
-    if(url.searchParams.get("isValidName") == 'false')
-        document.getElementById('wrongName').style.display = "block";
-    if(url.searchParams.get("isValidSurname") == 'false')
-        document.getElementById('wrongSurname').style.display = "block";
-    if(url.searchParams.get("isValidEmail") == 'false')
-        document.getElementById('wrongEmail').style.display = "block";
-    if(url.searchParams.get("isBusyLogin") == 'false')
-        document.getElementById('busyLogin').style.display = "block";
-    if(url.searchParams.get("isBusyEmail") == 'false')
-        document.getElementById('busyEmail').style.display = "block";
-
-
-    // Get the modal
-    var modal = document.getElementById('id01');
+//    var url = new URL(document.URL);
+//    var isValidSurname = url.searchParams.get("isValidSurname");
+//    var isValidaPas = url.searchParams.get("isValidPassword");
+//    if(url.searchParams.get("isValidPassword") == 'false')
+//        document.getElementById('wrongPassword').style.display = "block";
+//    if(url.searchParams.get("isValidLogin") == 'false')
+//        document.getElementById('wrongLogin').style.display = "block";
+//    if(url.searchParams.get("isValidName") == 'false')
+//        document.getElementById('wrongName').style.display = "block";
+//    if(url.searchParams.get("isValidSurname") == 'false')
+//        document.getElementById('wrongSurname').style.display = "block";
+//    if(url.searchParams.get("isValidEmail") == 'false')
+//        document.getElementById('wrongEmail').style.display = "block";
+//    if(url.searchParams.get("isBusyLogin") == 'false')
+//        document.getElementById('busyLogin').style.display = "block";
+//    if(url.searchParams.get("isBusyEmail") == 'false')
+//        document.getElementById('busyEmail').style.display = "block";
+//
+//
+//    // Get the modal
+//    var modal = document.getElementById('id01');
 
     // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+//    window.onclick = function(event) {
+//        if (event.target == modal) {
+//            modal.style.display = "none";
+//        }
+//    }
 </script>
 
 </body>

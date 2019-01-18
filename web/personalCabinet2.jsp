@@ -25,32 +25,8 @@
                 <td>${cur_request.text}</td>
                 <td>${cur_request.status}</td>
                 <td>
-                    <%--<c:forEach items="${cur_request.getItems()}" var="cur_item">--%>
-                        <%--${cur_item.getName()}--%>
-                        <%--<br>--%>
-                        <%--${cur_item.getInfo()}--%>
-                        <%--<br>--%>
-                    <%--</c:forEach>--%>
-                            ${cur_request.itemId}
+                    ${items[cur_request.id].name}
                 </td>
-                    <%--${cur_request.userId}--%>
-                <%--<td>--%>
-                    <%--<form method="get" actions="feedback.jsp">--%>
-                        <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
-                        <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
-                        <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
-                        <%--<button type="submit" class="cancel" name="feedbackButton" value="${cur_request.id}">Оставить отзыв</button>--%>
-                    <%--</form>--%>
-
-
-                    <%--<c:if test="${!feedbackIsWritten.contains(cur_request.id)}">--%>
-                        <%--<form method="get" actions="feedback.jsp">--%>
-                            <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
-                            <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
-                            <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
-                            <%--<button type="submit" class="cancel" name="feedbackButton" value="${cur_request.id}">Оставить отзыв</button>--%>
-                        <%--</form>--%>
-                    <%--</c:if>--%>
                  <td>
                         <c:if test="${cur_request.feedback eq null && (cur_request.status eq 'done' || cur_request.status eq 'rejected')}">
                             <form method="get" action="feedback.jsp">
@@ -61,16 +37,6 @@
                             </form>
                         </c:if>
                 </td>
-                <%--<td>--%>
-                    <%--<c:if test="${cur_request.status eq 'waited'}">--%>
-                        <%--<form method="get" actions="feedback.jsp">--%>
-                            <%--<input type="hidden" name="currentPage" value="${currentPage}">--%>
-                            <%--<input type="hidden" name="recordsPerPage" value="${recordsPerPage}">--%>
-                            <%--<input type="hidden" name="request_id" value="${cur_request.id}">--%>
-                            <%--<button type="submit" class="cancel" name="waited" value="${cur_request.id}">Подтвердить</button>--%>
-                        <%--</form>--%>
-                    <%--</c:if>--%>
-                <%--</td>--%>
                 <td>
                     <c:if test="${cur_request.price ne null && cur_request.status eq 'done'}">
                         ${cur_request.price}
@@ -79,13 +45,10 @@
                 <td>
                     <c:if test="${cur_request.feedback ne null}">
                         ${cur_request.feedback.text}
+                            <hr>
+                        (${cur_request.feedback.date})
                     </c:if>
                 </td>
-                <%--<td>--%>
-                    <%--<c:if test="${cur_request.feedback ne null}">--%>
-                        <%--${cur_request.feedback.text}--%>
-                    <%--</c:if>--%>
-                <%--</td>--%>
                 <td>
                     <c:if test="${cur_request.status eq 'rejected'}">
                         ${cur_request.reject.text}
@@ -96,7 +59,7 @@
     </table>
 </div>
 
-<nav aria-label="Navigation for countries">
+<nav aria-label="Navigation for requests">
     <ul class="pagination">
         <c:if test="${currentPage != 1}">
             <li class="page-item"><a class="page-link"
